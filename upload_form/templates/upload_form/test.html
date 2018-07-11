@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block extrastyle %}
+    {% comment %}
+    <link rel="stylesheet" href="{% static 'upload_form.css' %}" type="text/css" charset="utf-8" />
+    {% endcomment %}
+{% endblock %}
+
+
+{% block extrajs %}
+    {{form.media}}
+    {% comment %}
+    <script src="{% static 'upload_form.js' %}"></script>
+    {% endcomment %}
+{% endblock %}
+
+
+{% block content %}
+
+    <div class="container">
+        <div class="row">
+            <div id="upload-box" class="text-center col-md-6 col-md-offset-3" style="">
+
+                {{ form_as_html }}
+
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}

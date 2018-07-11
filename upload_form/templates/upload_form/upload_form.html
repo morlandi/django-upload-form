@@ -1,0 +1,54 @@
+{% load i18n %}
+
+<div id="umf_drop_area">
+
+    <form method="post" enctype="multipart/form-data" action="{{ action }}" class="umf_form">
+        {% csrf_token %}
+
+        <p>{% trans 'Upload multiple files with the file dialog or by dragging and dropping them onto the dashed region' %}</p>
+
+        {% if file_errors %}
+        <div class="alert alert-danger">
+            <strong>{% trans 'Please correct the errors below' %}</strong>
+            <ul class="errorlist">
+                {% for error in file_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <input style="display: none;" type="file" name="files" id="udm_file_input" multiple onchange="UploadForm.handleFiles(this.files)">
+        <label class="button" for="udm_file_input">
+            <i class="glyphicon glyphicon-cloud-upload"></i>
+            <p>
+                {% trans 'Select some files' %}
+            </p>
+        </label>
+
+        <p class="submit" style="display: none;">
+            <button type="submit" class="btn btn-primary">
+                <i class="glyphicon glyphicon-upload"></i>
+                &nbsp;&nbsp;{% trans 'Send' %}
+            </button>
+        </p>
+        <div class="progress" style="display: none;">
+            <div class="progress-bar progress-bar-success progress-bar-striped active"
+                role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+            </div>
+        </div>
+        <table class="umf_file_list" style="display: none;">
+            <thead>
+                <tr>
+                    <th>{% trans 'type' %}</th>
+                    <th>{% trans 'name' %}</th>
+                    <th>{% trans 'size' %}</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+
+    </form>
+
+</div>
