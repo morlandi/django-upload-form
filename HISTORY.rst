@@ -3,6 +3,10 @@
 History
 =======
 
+v0.0.3
+------
+* Minor fixes
+
 v0.0.2
 ------
 * Italian translation added

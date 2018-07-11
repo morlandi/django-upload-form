@@ -5,7 +5,7 @@
     <form method="post" enctype="multipart/form-data" action="{{ action }}" class="umf_form">
         {% csrf_token %}
 
-        <p>{% trans 'Upload multiple files with the file dialog or by dragging and dropping them onto the dashed region' %}</p>
+        <p>{% trans 'Select multiple files with the file dialog or by dragging and dropping them onto the dashed region' %}</p>
 
         {% if file_errors %}
         <div class="alert alert-danger">
@@ -26,12 +26,15 @@
             </p>
         </label>
 
-        <p class="submit" style="display: none;">
-            <button type="submit" class="btn btn-primary">
+        <div class="submit" style="display: none;">
+            <div>
+                {% trans 'Press the button below to proceed with files upload' %}
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg">
                 <i class="glyphicon glyphicon-upload"></i>
                 &nbsp;&nbsp;{% trans 'Send' %}
             </button>
-        </p>
+        </div>
         <div class="progress" style="display: none;">
             <div class="progress-bar progress-bar-success progress-bar-striped active"
                 role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">

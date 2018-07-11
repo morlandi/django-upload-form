@@ -1,4 +1,5 @@
 import os
+from django.conf import settings
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from django import forms
@@ -71,9 +72,26 @@ class UploadForm(forms.Form):
             print('[%d]: "%s"' % (i, file))
         print('=' * 128)
 
+    def list_allowed_file_types(self):
+        try:
+            from constance import config
+            str_types = config.UPLOAD_FROM_ALLOWED_FILE_TYPES
+        except:
+            str_types = getattr(settings, 'UPLOAD_FROM_ALLOWED_FILE_TYPES', "png jpg jpeg gif")
+        return str_types.lower().split()
+
+    def get_max_file_size_MB(self):
+        try:
+            from constance import config
+            max_size_MB = config.MAX_FILE_SIZE_MB
+        except:
+            max_size_MB = getattr(settings, 'UPLOAD_FORM_MAX_FILE_SIZE_MB', 10)
+        return max_size_MB
+
     def is_valid(self):
 
-        allowed_file_types = ALLOWED_FILE_TYPES.split()
+        allowed_file_types = self.list_allowed_file_types()
+        max_file_size_MB = self.get_max_file_size_MB()
 
         self.file_errors = []
         files = self.files.getlist('files')
@@ -83,7 +101,7 @@ class UploadForm(forms.Form):
             size_MB = file.size / (1024 * 1024)
             if extension not in allowed_file_types:
                 self.file_errors.append("%s: %s" % (file.name, _('File type not allowed')))
-            if size_MB > MAX_FILE_SIZE_MB:
+            if size_MB > max_file_size_MB:
                 self.file_errors.append("%s: %s" % (file.name, _('File size exceeds %s MB limit') % str(MAX_FILE_SIZE_MB)))
 
         return len(self.file_errors) <= 0

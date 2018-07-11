@@ -15,9 +15,9 @@
 
 
 #umf_drop_area label {
-    width: 80%;
-    padding: 16px;
-    font-size: 2em;
+    width: 60%;
+    padding: 10px;
+    font-size: 1.8em;
     text-overflow: ellipsis;
     /*white-space: nowrap;*/
     cursor: pointer;
@@ -29,7 +29,7 @@
 }
 
 #umf_drop_area label i {
-    font-size: 2em;
+    font-size: 1.5em;
 }
 
 #umf_drop_area .umf_file_list {
@@ -59,4 +59,8 @@
     padding: 0;
     margin: 0;
     text-align: left;
+}
+
+#umf_drop_area .submit button {
+    margin: 10px 0;
 }

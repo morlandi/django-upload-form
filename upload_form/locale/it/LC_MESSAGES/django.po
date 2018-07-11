@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-10 23:30+0200\n"
-"PO-Revision-Date: 2018-07-10 23:32+0200\n"
+"POT-Creation-Date: 2018-07-11 17:49+0200\n"
+"PO-Revision-Date: 2018-07-11 17:49+0200\n"
 "Last-Translator: Mario Orlandi <morlandi@brainstorm.it>\n"
 "Language-Team: \n"
 "Language: it\n"
@@ -18,21 +18,21 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.0.8\n"
 
-#: forms.py:76
+#: forms.py:103
 msgid "File type not allowed"
 msgstr "Tipo di file non ammesso"
 
-#: forms.py:78
+#: forms.py:105
 #, python-format
 msgid "File size exceeds %s MB limit"
 msgstr "Il file supera la dimensione massima consentita di %s MB"
 
 #: templates/upload_form/upload_form.html:8
 msgid ""
-"Upload multiple files with the file dialog or by dragging and dropping them "
+"Select multiple files with the file dialog or by dragging and dropping them "
 "onto the dashed region"
 msgstr ""
-"Carica uno o più files premendo il bottone o trascinandoli nell'area "
+"Seleziona uno o più files premendo il bottone o trascinandoli nell'area "
 "tratteggiata"
 
 #: templates/upload_form/upload_form.html:12
@@ -43,18 +43,22 @@ msgstr "Si prega di correggere gli errori di seguito evidenziati"
 msgid "Select some files"
 msgstr "Seleziona uno o più files"
 
-#: templates/upload_form/upload_form.html:32
+#: templates/upload_form/upload_form.html:31
+msgid "Press the button below to proceed with files upload"
+msgstr ""
+
+#: templates/upload_form/upload_form.html:35
 msgid "Send"
 msgstr "Invia"
 
-#: templates/upload_form/upload_form.html:43
+#: templates/upload_form/upload_form.html:46
 msgid "type"
 msgstr "tipo"
 
-#: templates/upload_form/upload_form.html:44
+#: templates/upload_form/upload_form.html:47
 msgid "name"
 msgstr "nome"
 
-#: templates/upload_form/upload_form.html:45
+#: templates/upload_form/upload_form.html:48
 msgid "size"
 msgstr "dimensione"
