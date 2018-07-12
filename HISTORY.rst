@@ -3,6 +3,10 @@
 History
 =======
 
+v0.0.4
+------
+* App settings removed
+
 v0.0.3
 ------
 * Minor fixes

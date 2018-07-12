@@ -4,9 +4,6 @@ from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from django import forms
 
-from .app_settings import ALLOWED_FILE_TYPES
-from .app_settings import MAX_FILE_SIZE_MB
-
 
 class UploadForm(forms.Form):
     """
@@ -77,7 +74,7 @@ class UploadForm(forms.Form):
             from constance import config
             str_types = config.UPLOAD_FROM_ALLOWED_FILE_TYPES
         except:
-            str_types = getattr(settings, 'UPLOAD_FROM_ALLOWED_FILE_TYPES', "png jpg jpeg gif")
+            str_types = getattr(settings, 'UPLOAD_FROM_ALLOWED_FILE_TYPES', "jpg jpeg png gif bmp tif tiff pic doc docx odt dot xls xlsx pdf dwg dxf txt")
         return str_types.lower().split()
 
     def get_max_file_size_MB(self):
