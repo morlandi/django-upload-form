@@ -1,5 +1,9 @@
 from django.shortcuts import render
-from django.core.urlresolvers import reverse
+try:
+    from django.urls import reverse
+except ModuleNotFoundError as e:
+    # for Django < v1.10
+    from django.core.urlresolvers import reverse
 from django.http import JsonResponse
 from .forms import UploadForm
 
