@@ -26,12 +26,43 @@ then add 'upload_form' to your INSTALLED_APPS:
 Sample usage
 ------------
 
-`file views.py`
+The `upoad_form` app provides a sample test view which uploads multiple files
+for illustration purposes.
+
+You can run, study, and possibly duplicate it for further customizations.
+
+To use it, add this to your main urls mapping:
+
+`file urls.py':
+
+.. code:: bash
+
+    urlpatterns = [
+        ...
+        path('upload_form/', include('upload_form.urls', namespace='upload_form')),
+        ...
+    ]
+
+then visit this url::
+
+    http://127.0.0.1:8000/upload_form/test/
+
+Below is the source code of the whole test; the real work is done inside the app
+by the UploadForm class, which TestUploadForm is derived from.
+
+In the derived form class, you should always override:
+
+    - def form_valid(self, request)
+    - def get_success_url(self)
+    - def get_action(self)
+
+
+`file upload_form/views.py`
 
 .. code:: python
 
     from django.shortcuts import render
-    from django.core.urlresolvers import reverse
+    from django.urls import reverse
     from django.http import JsonResponse
     from .forms import UploadForm
 
@@ -69,7 +100,7 @@ Sample usage
             }
         )
 
-`file templates/test.html`
+`file templates/upload_form/test.html`
 
 .. code:: html
 
@@ -135,3 +166,4 @@ References
 - `Multiple File Upload Input <https://davidwalsh.name/multiple-file-upload>`_
 - `Styling & Customizing File Inputs the Smart Way <https://tympanus.net/codrops/2015/09/15/styling-customizing-file-inputs-smart-way/>`_
 - `How to set file input value when dropping file on page? <https://stackoverflow.com/questions/47515232/how-to-set-file-input-value-when-dropping-file-on-page>`_
+- `A strategy for handling multiple file uploads using JavaScript <https://medium.com/typecode/a-strategy-for-handling-multiple-file-uploads-using-javascript-eb00a77e15f>`_
