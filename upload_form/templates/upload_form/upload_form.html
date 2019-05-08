@@ -2,6 +2,10 @@
 
 <div id="umf_drop_area">
 
+    <script type="text/javascript">
+        var UPLOAD_FORM_PARALLEL_UPLOAD = {{UPLOAD_FORM_PARALLEL_UPLOAD|lower}};
+    </script>
+
     <form method="post" enctype="multipart/form-data" action="{{ action }}" class="umf_form">
         {% csrf_token %}
 

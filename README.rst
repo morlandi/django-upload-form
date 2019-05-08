@@ -128,13 +128,38 @@ In the derived form class, you should always override:
     {% endblock content %}
 
 
+App settings
+------------
+
+App settings can be either overriden in settings.py or django-constance (the latter has precedence).
+
+
+UPLOAD_FORM_MAX_FILE_SIZE_MB
+
+    Max size for each uploaded file, in MB
+
+    Default: 10
+
+UPLOAD_FORM_ALLOWED_FILE_TYPES
+
+    The list of allowed file extensions
+
+    Default: "png jpg jpeg gif"
+
+
+UPLOAD_FORM_PARALLEL_UPLOAD
+
+    Experimental: upload files in parallel
+
+    Default: False
+
 Settings
 --------
 
 .. code:: python
 
     UPLOAD_FORM_MAX_FILE_SIZE_MB = 12
-    UPLOAD_FROM_ALLOWED_FILE_TYPES = "png jpg jpeg gif"
+    UPLOAD_FORM_ALLOWED_FILE_TYPES = "png jpg jpeg gif"
 
 or:
 
@@ -143,7 +168,7 @@ or:
     CONSTANCE_CONFIG = {
         ...
         'UPLOAD_FORM_MAX_FILE_SIZE_MB': (12, 'Dimensione massima files in upload (MB)'),
-        'UPLOAD_FROM_ALLOWED_FILE_TYPES': ("png jpg jpeg gif", "Tipi di files abilitati all'upload"),
+        'UPLOAD_FORM_ALLOWED_FILE_TYPES': ("png jpg jpeg gif", "Tipi di files abilitati all'upload"),
     }
 
 

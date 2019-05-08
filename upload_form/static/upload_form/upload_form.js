@@ -144,6 +144,64 @@ window.UploadForm = (function() {
         var dropArea = $('#umf_drop_area');
         var form = $(dropArea.find('form'));
 
+        dropArea.find('.progress').show();
+        var progressBar = dropArea.find('.progress-bar');
+        var url = form.attr('action');
+
+        if (UPLOAD_FORM_PARALLEL_UPLOAD) {
+            $(fileList).each(function(index, file) {
+                sendSingleFile(file, url);
+            });
+        }
+        else {
+            sendMultipleFiles(fileList, url, progressBar);
+        }
+    }
+
+    function sendSingleFile(file, url) {
+        console.log('file: %o', file);
+        var data = new FormData();
+        data.set('files', file);
+        console.log('sending file "%o"', file);
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: data,
+            dataType: 'json',
+            processData: false,
+            contentType: false,
+            headers: {"X-CSRFToken": getCookie('csrftoken')},
+            xhr: function() {
+                var xhr = $.ajaxSettings.xhr();
+                xhr.upload.onprogress = function(e) {
+                    console.log(Math.floor(e.loaded / e.total *100) + '%');
+                    // var progress = sprintf("%d%%", Math.floor(e.loaded / e.total *100));
+                    // progressBar.css('width', progress);
+                    // progressBar.text(progress);
+                };
+              return xhr;
+            }
+        }).done(function(data) {
+            switch (data.action) {
+                case 'replace':
+                    dropArea.replaceWith(data.html);
+                    initialize();
+                    break;
+                case 'redirect':
+                    //window.location.replace(data.url);
+                    console.log('done');
+                    break;
+            }
+        }).fail(function(jqXHR, textStatus) {
+            console.log('ERROR: %o', jqXHR);
+            alert('ERROR: ' + jqXHR.statusText);
+            window.location.replace(url);
+        });
+    }
+
+    function sendMultipleFiles(fileList, url, progressBar) {
+
         // Retrieve files from form:
         //var data = new FormData(form.get(0));
 
@@ -152,11 +210,8 @@ window.UploadForm = (function() {
         var data = new FormData();
         $(fileList).each(function(index, file) {
             data.append('files', file);
+            data.append('title', 'ciao');
         });
-
-        var progressBar = dropArea.find('.progress-bar');
-        dropArea.find('.progress').show();
-        var url = form.attr('action');
 
         $.ajax({
             type: "POST",
