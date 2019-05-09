@@ -17,7 +17,10 @@ class UploadForm(forms.Form):
         css = {
             'all': ('upload_form/upload_form.css',)
         }
-        js = ('upload_form/upload_form.js', )
+        js = (
+            'upload_form/upload_form.js',
+            'upload_form/filelist.js',
+        )
 
     def __init__(self, data=None, files=None):
         super().__init__(data, files)

@@ -13,10 +13,8 @@ https://stackoverflow.com/questions/23945494/use-html5-to-resize-an-image-before
 // Today we feel zealous enough to use the Module Pattern ;)
 window.UploadForm = (function() {
 
-    var fileList = [];
-
     function initialize() {
-        fileList = [];
+        UploadFormFileList.initialize('#umf_drop_area .file_list_wrapper');
         var dropArea = $('#umf_drop_area');
         dropArea.on('dragenter dragover', function(event) {
             event.preventDefault();
@@ -28,18 +26,6 @@ window.UploadForm = (function() {
         });
         dropArea.on('drop', onDropAreaDrop);
         dropArea.find('form').on('submit', onFormSubmit);
-
-        $('#umf_remove_all_files').on('click', clearFileList);
-    }
-
-    function _fileSize(b) {
-        var u = 0;
-        var s = 1024;
-        while (b >= s || -b >= s) {
-            b /= s;
-            u++;
-        }
-        return (u ? b.toFixed(1) + ' ' : b) + ' KMGTPEZY'[u] + 'B';
     }
 
     function onDropAreaDrop(event) {
@@ -53,83 +39,14 @@ window.UploadForm = (function() {
         handleFiles(files);
     }
 
-    function removeFromFileList(filename) {
-        // Remove specified item from fileList array;
-        // returns true if successfull, false if not found
-        var rc = false;
-        $(fileList).each(function(index, item) {
-            if (item.name == filename) {
-                fileList.splice(index, 1);  // remove
-                console.log('"%o" removed', filename);
-                rc = true;
-                return false;  // break
-            }
-        });
-        return rc;
-    }
-
-    function addToFileList(file) {
-        // Append this 'file' to fileList array;
-        // To avoid duplicates, first removes the previoulsy inserted item
-        // with same filename, if exists
-        removeFromFileList(file.name);
-        fileList.push(file);
-    }
-
-    function deleteFileListRow(element) {
-        // Delete the file associated to this row,
-        // then refresh UI
-        event.preventDefault();
-        var row = $(event.target).closest('tr');
-        var filename = row.find('.filename').text();
-        removeFromFileList(filename);
-        refreshFileList();
-    }
-
-    function clearFileList(event) {
-        // Remove all files in fileList array,
-        // then refresh UI
-        event.preventDefault();
-        fileList = [];
-        refreshFileList();
-    }
-
-    function refreshFileList() {
-        // Update UI by refreshing the file display table;
-        // also, restore row event handlers
-        console.log('fileList: %o', fileList);
-        if (fileList.length <= 0) {
-            $('#umf_file_list_wrapper').hide();
-            $('.umf_remove_file').off();
-        }
-        else {
-            $('#umf_file_list_wrapper').show();
-            var dropArea = $('#umf_drop_area');
-            var fileDisplay = dropArea.find('.umf_file_list tbody');
-
-            //dropArea.find('.umf_file_list, .submit').show();
-            fileDisplay.html('');
-            $(fileList).each(function(index, file) {
-                fileDisplay.append(sprintf(
-                    '<tr><td class="filetype">%s</td><td class="filename">%s</td><td class="numeric">%s</td><td>%s</td></tr>',
-                    file.name.split('.').pop(),
-                    file.name,
-                    _fileSize(file.size),
-                    '<a href="#" class="umf_remove_file" title="remove this"><i class="glyphicon glyphicon-trash"></i></a>'
-                ));
-            });
-            $('.umf_remove_file').off().on('click', deleteFileListRow);
-        }
-    }
-
     function handleFiles(files) {
         // Append new files to fileList
         $(files).each(function(index, file) {
-            addToFileList(file);
+            UploadFormFileList.add(file);
         });
 
         // Update UI
-        refreshFileList();
+        UploadFormFileList.refreshUI();
     }
 
     function getCookie(name) {
@@ -148,13 +65,14 @@ window.UploadForm = (function() {
         var progressBar = dropArea.find('.progress-bar');
         var url = form.attr('action');
 
+        var filelist = UploadFormFileList.get_filelist();
         if (UPLOAD_FORM_PARALLEL_UPLOAD) {
-            $(fileList).each(function(index, file) {
+            $(filelist).each(function(index, file) {
                 sendSingleFile(file, url);
             });
         }
         else {
-            sendMultipleFiles(fileList, url, progressBar);
+            sendMultipleFiles(filelist, url, progressBar);
         }
     }
 
@@ -200,7 +118,7 @@ window.UploadForm = (function() {
         });
     }
 
-    function sendMultipleFiles(fileList, url, progressBar) {
+    function sendMultipleFiles(filelist, url, progressBar) {
 
         // Retrieve files from form:
         //var data = new FormData(form.get(0));
@@ -208,7 +126,7 @@ window.UploadForm = (function() {
         // Retrieve files from fileList;
         // As with regular form data, you can append multiple values with the same name.
         var data = new FormData();
-        $(fileList).each(function(index, file) {
+        $(filelist).each(function(index, file) {
             data.append('files', file);
             data.append('title', 'ciao');
         });

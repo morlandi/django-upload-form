@@ -136,7 +136,7 @@ App settings can be either overriden in settings.py or django-constance (the lat
 
 UPLOAD_FORM_MAX_FILE_SIZE_MB
 
-    Max size for each uploaded file, in MB
+    Max allowed size for each uploaded file, in MB
 
     Default: 10
 
