@@ -18,11 +18,11 @@ readme = open('README.rst').read()
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
 
-setup(name='django_upload_form',
+setup(name='django-upload-form',
       version=version,
       description='A Django-like form to upload multiple files',
       long_description=readme + '\n\n' + history,
-      url='http://github.com/morlandi/django_upload_form',
+      url='http://github.com/morlandi/django-upload-form',
       author='Mario Orlandi',
       author_email='morlandi@brainstorm.it',
       license='MIT',
