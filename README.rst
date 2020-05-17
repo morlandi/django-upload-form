@@ -11,7 +11,7 @@ Install the package by running:
 
 .. code:: bash
 
-    pip install git+https://github.com/morlandi/django_upload_form
+    pip install git+https://github.com/morlandi/django-upload-form
 
 then add 'upload_form' to your INSTALLED_APPS:
 
