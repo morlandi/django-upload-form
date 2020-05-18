@@ -5,6 +5,7 @@ History
 
 v0.2.1
 ------
+* package renamed "django-upload-form" (was "django_upload_form")
 * cleanup
 * improved documentation
 
