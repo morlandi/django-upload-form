@@ -112,6 +112,8 @@ Installation
 
 Install the package from Python Package Index running:
 
+.. code:: bash
+
     pip install django-upload-form
 
 or from GitHub:
