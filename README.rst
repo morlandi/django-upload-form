@@ -156,9 +156,12 @@ Below is the source code of the whole test.
 `file upload_form/views.py`
 
 .. code:: python
-
     from django.shortcuts import render
-    from django.urls import reverse
+    try:
+        from django.urls import reverse
+    except ModuleNotFoundError as e:
+        # for Django < v1.10
+        from django.core.urlresolvers import reverse
     from django.http import JsonResponse
     from .forms import UploadForm
 
@@ -166,10 +169,15 @@ Below is the source code of the whole test.
     class TestUploadForm(UploadForm):
 
         def form_valid(self, request):
+            print("*")
+            print("* TestUploadForm.form_valid() ...")
+            print("* Here, we just log the list of received files;")
+            print("* What you do with these files in a real project is entirely up to you.")
+            print("*")
             self.dump()
             return self.get_success_url(request)
 
-        def get_success_url(self, response=None):
+        def get_success_url(self, request=None):
             return '/'
 
         def get_action(self):
@@ -190,11 +198,12 @@ Below is the source code of the whole test.
 
         return render(
             request,
-            'upload_form/test.html', {
+            'upload_form/test_view.html', {
                 'form': form,
                 'form_as_html': form.as_html(request),
             }
         )
+
 
 `file templates/upload_form/test.html`
 
@@ -227,14 +236,13 @@ Below is the source code of the whole test.
 App Settings
 ------------
 
-Some settings are provided for customization;
+Some settings are provided for optional customization.
 
-the library will search for these settings:
+The library will search these settings in the following order:
 
     - as `Django Constance` dynamic settings (see `https://github.com/jazzband/django-constance <https://github.com/jazzband/django-constance>`_)
     - failing that, in project's settings
     - failing that, a suitable "safe" default value is used
-
 
 .. code:: python
 
