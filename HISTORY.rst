@@ -3,6 +3,10 @@
 History
 =======
 
+v0.2.2
+------
+* improved Readme
+
 v0.2.1
 ------
 * package renamed "django-upload-form" (was "django_upload_form")
