@@ -3,9 +3,13 @@
 History
 =======
 
-v0.2.3
+v0.3.0
 ------
 * published on PyPI
+
+v0.2.3
+------
+* prepare for publishing on PyPI
 
 v0.2.2
 ------

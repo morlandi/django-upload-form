@@ -28,5 +28,5 @@ setup(name='django-upload-form',
       license='MIT',
       include_package_data=True,
       packages=find_packages(),
-      zip_safe=False)
+      zip_safe=False,
 )
