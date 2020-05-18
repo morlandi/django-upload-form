@@ -156,6 +156,7 @@ Below is the source code of the whole test.
 `file upload_form/views.py`
 
 .. code:: python
+
     from django.shortcuts import render
     try:
         from django.urls import reverse
