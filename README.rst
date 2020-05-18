@@ -140,7 +140,7 @@ You can run, study, and possibly duplicate it for further customizations.
 
 To use it, add this to your main urls mapping:
 
-`file urls.py':
+`file urls.py`:
 
 .. code:: bash
 

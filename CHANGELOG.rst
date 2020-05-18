@@ -3,6 +3,10 @@
 History
 =======
 
+v0.3.1
+------
+* fix Readme to keep twine happy
+
 v0.3.0
 ------
 * published on PyPI
