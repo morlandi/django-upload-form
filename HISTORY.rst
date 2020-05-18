@@ -3,6 +3,11 @@
 History
 =======
 
+v0.2.1
+------
+* cleanup
+* improved documentation
+
 v0.2.0
 ------
 * fixes for Django 2.x

@@ -1,8 +1,111 @@
 
-upload_form
-===========
+django-upload-form
+==================
 
-A Django-like form to upload multiple files
+A minimal (yet careful about UX) solution to upload multiple files in a Django project,
+using a Django-like Form Class.
+
+
+Purpose
+-------
+
+The purpose of this module is that of providing a simple yet effective tool
+for managing the user interaction for files uploading in a Django projects,
+with the following features:
+
+1) before submission:
+
+    - files can be added to the upload list either via drag&drop or with an file-open dialog
+    - user can revise the upload list by adding or removing files
+    - the list displays informations about the files (name, tipe, size)
+
+2) during submission:
+
+    - image files are optionally resized up to a configurabile max resolution (TODO: recover this from "experiments" branch)
+    - a progress bar is shown during files upload
+
+3) after submission:
+
+    - TODO: ADD MORE DETAILS HERE
+
+All this is obtained by leveraging HTML5 specific capabilities, and applying some clever (in my opinion)
+and sometimes hacky techniques I learned from a few selected articles, listed in the `References`
+section below.
+
+No external dependencies are required (other than jQuery).
+
+The codebase is deliberately minimal.
+
+
+How to use `django-upload-form`
+-------------------------------
+
+The only purpose of the package is that of:
+
+- managing user interaction
+- upload the files upon form submission
+
+**What you do with the uploaded files is entirely up to you, and you're responsible for this.**
+
+These are the steps required to use `django-upload-form`:
+
+- derive your own Form class from UploadForm, and override a few methods
+- provide a view which will be the target for files upload
+
+
+The UploadForm-derived class
+----------------------------
+
+At the very minimum, you need to override the following methods:
+
+- form_valid(self, request)
+    Here is where you receive the list of (in-memory) uploaded files after submission;
+    What you do with the uploaded files is entirely up to you.
+    This method should normally return `get_success_url()`.
+
+- get_success_url(self)
+    Determine the URL to redirect to when the form is successfully validated.
+
+- get_action(self)
+    Returns the url of the `target view` (see below).
+
+
+The target view
+---------------
+
+The target view will receive the uploaded files with a POST request, and normally should:
+
+    - build a bounded form
+    - validate it
+    - invoke form_valid()
+
+You will probably use the same view for form rendering (GET); this is quite common
+practice, but entirely optional.
+
+Example ('test_view'):
+
+.. code:: python
+
+    def test_view(request):
+
+        if request.method == 'GET':
+            form = TestUploadForm()
+        else:
+            form = TestUploadForm(request.POST, request.FILES)
+            if form.is_valid():
+                url = form.form_valid(request)
+                return JsonResponse({'action': 'redirect', 'url': url, })
+            else:
+                return JsonResponse({'action': 'replace', 'html': form.as_html(request), })
+
+        return render(
+            request,
+            'upload_form/test_view.html', {
+                'form': form,
+                'form_as_html': form.as_html(request),
+            }
+        )
+
 
 Installation
 ------------
@@ -47,14 +150,7 @@ then visit this url::
 
     http://127.0.0.1:8000/upload_form/test/
 
-Below is the source code of the whole test; the real work is done inside the app
-by the UploadForm class, which TestUploadForm is derived from.
-
-In the derived form class, you should always override:
-
-    - def form_valid(self, request)
-    - def get_success_url(self)
-    - def get_action(self)
+Below is the source code of the whole test.
 
 
 `file upload_form/views.py`
@@ -71,16 +167,16 @@ In the derived form class, you should always override:
 
         def form_valid(self, request):
             self.dump()
-            return self.get_success_url()
+            return self.get_success_url(request)
 
-        def get_success_url(self):
+        def get_success_url(self, response=None):
             return '/'
 
         def get_action(self):
-            return reverse('upload_form:test')
+            return reverse('upload_form:test_view')
 
 
-    def test(request):
+    def test_view(request):
 
         if request.method == 'GET':
             form = TestUploadForm()
@@ -128,8 +224,17 @@ In the derived form class, you should always override:
     {% endblock content %}
 
 
-Settings
---------
+App Settings
+------------
+
+Some settings are provided for customization;
+
+the library will search for these settings:
+
+    - as `Django Constance` dynamic settings (see `https://github.com/jazzband/django-constance <https://github.com/jazzband/django-constance>`_)
+    - failing that, in project's settings
+    - failing that, a suitable "safe" default value is used
+
 
 .. code:: python
 

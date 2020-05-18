@@ -11,17 +11,22 @@ from .forms import UploadForm
 class TestUploadForm(UploadForm):
 
     def form_valid(self, request):
+        print("*")
+        print("* TestUploadForm.form_valid() ...")
+        print("* Here, we just log the list of received files;")
+        print("* What you do with these files in a real project is entirely up to you.")
+        print("*")
         self.dump()
-        return self.get_success_url()
+        return self.get_success_url(request)
 
-    def get_success_url(self):
+    def get_success_url(self, request=None):
         return '/'
 
     def get_action(self):
-        return reverse('upload_form:test')
+        return reverse('upload_form:test_view')
 
 
-def test(request):
+def test_view(request):
 
     if request.method == 'GET':
         form = TestUploadForm()
@@ -35,7 +40,7 @@ def test(request):
 
     return render(
         request,
-        'upload_form/test.html', {
+        'upload_form/test_view.html', {
             'form': form,
             'form_as_html': form.as_html(request),
         }

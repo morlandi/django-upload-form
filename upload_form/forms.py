@@ -9,7 +9,7 @@ class UploadForm(forms.Form):
     """
     This class behaves much like a Django form.
 
-    See upload_form.views.test() for a usage example.
+    See upload_form.views.test_view() for a usage example.
     """
 
     class Media:
@@ -32,7 +32,7 @@ class UploadForm(forms.Form):
         """
         assert False, 'To be overridden'
 
-    def get_success_url(self):
+    def get_success_url(self, request=None):
         """
         Example:
             return '/'
@@ -42,7 +42,7 @@ class UploadForm(forms.Form):
     def get_action(self):
         """
         Example:
-            return reverse('upload_form:test')
+            return reverse('upload_form:test_view')
         """
         assert False, 'To be overridden'
 
