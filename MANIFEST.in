@@ -1,4 +1,6 @@
 include README.rst
+include LICENSE
+include CHANGELOG.rst
 recursive-include upload_form/locale *
 recursive-include upload_form/static *
 recursive-include upload_form/templates *

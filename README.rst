@@ -110,11 +110,15 @@ Example ('test_view'):
 Installation
 ------------
 
-Install the package by running:
+Install the package from Python Package Index running:
+
+    pip install django-upload-form
+
+or from GitHub:
 
 .. code:: bash
 
-    pip install git+https://github.com/morlandi/django-upload-form
+    pip install git+https://github.com/morlandi/django-upload-form@master
 
 then add 'upload_form' to your INSTALLED_APPS:
 
@@ -271,6 +275,14 @@ Screenshots
 .. image:: screenshots/003.png
 
 .. image:: screenshots/004.png
+
+
+License
+-------
+
+The app is intended to be open source.
+
+Feel free to use it we at your will with no restrictions at all.
 
 
 References

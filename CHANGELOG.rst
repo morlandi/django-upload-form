@@ -3,6 +3,10 @@
 History
 =======
 
+v0.2.3
+------
+* published on PyPI
+
 v0.2.2
 ------
 * improved Readme

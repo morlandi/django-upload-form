@@ -15,12 +15,12 @@ def get_version(*file_paths):
 
 version = get_version("upload_form", "__init__.py")
 readme = open('README.rst').read()
-history = open('HISTORY.rst').read().replace('.. :changelog:', '')
+history = open('CHANGELOG.rst').read().replace('.. :changelog:', '')
 
 
 setup(name='django-upload-form',
       version=version,
-      description='A Django-like form to upload multiple files',
+      description='A minimal (yet careful about UX) solution to upload multiple files in a Django project, using a Django-like Form Class',
       long_description=readme + '\n\n' + history,
       url='http://github.com/morlandi/django-upload-form',
       author='Mario Orlandi',
@@ -28,14 +28,5 @@ setup(name='django-upload-form',
       license='MIT',
       include_package_data=True,
       packages=find_packages(),
-      zip_safe=False,
-      keywords='upload django',
-      classifiers=[
-          'Development Status :: 3 - Alpha',
-          'Framework :: Django :: 1.10',
-          'Intended Audience :: Developers',
-          'License :: OSI Approved :: BSD License',
-          'Natural Language :: English',
-          'Programming Language :: Python :: 3.6',
-      ],
+      zip_safe=False)
 )
