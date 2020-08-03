@@ -271,6 +271,30 @@ or:
         'UPLOAD_FROM_ALLOWED_FILE_TYPES': ("png jpg jpeg gif", "Tipi di files abilitati all'upload"),
     }
 
+Howto upload a video
+--------------------
+
+.. code:: python
+
+    class MyUploadForm(UploadForm):
+
+        ...
+
+        def get_accept(self, request=None):
+            return 'video/*'
+
+Other options to consider::
+
+    - accept="video/*" capture=""       ... only from camera
+    - accept="video/*"                  ... either camera or album
+
+Howto upload an image from the camera
+-------------------------------------
+
+::
+
+    - accept="image/*" capture="camera"
+
 
 Screenshots
 -----------

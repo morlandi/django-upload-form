@@ -1,4 +1,6 @@
 import datetime
+import imghdr
+from PIL import Image
 from django import template
 from django.utils import timezone
 from django.utils import formats
@@ -55,4 +57,16 @@ def format_datetime(dt, include_time=True, include_seconds=False, exclude_date=F
         text += dt.strftime('%H:%M')
         if include_seconds:
             text += dt.strftime(':%S')
+    return text
+
+
+@register.filter
+def imagesize(obj):
+    image_type = imghdr.what(obj.file)
+    if image_type is None:
+        return ''
+
+    image = Image.open(obj.file)
+    w, h = image.size
+    text = '%s (%dx%d)' % (image_type, w, h)
     return text
