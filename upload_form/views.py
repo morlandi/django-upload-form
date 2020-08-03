@@ -13,7 +13,7 @@ from .forms import UploadForm
 # https://www.agiliq.com/blog/2019/01/django-formview/
 
 # See also:
-# https://stackoverflow.com/questions/8059160/django-apps-using-class-based-views-and-ajax
+# https://stackoverflow.com/questions/8059160/django-apps-using-class-based-views-and-ajax#44441796
 
 class TestUploadForm(UploadForm):
 
@@ -29,7 +29,7 @@ class TestUploadForm(UploadForm):
     def get_success_url(self, request=None):
         return '/'
 
-    def get_action(self):
+    def get_action(self, request=None):
         return reverse('upload_form:test')
 
 

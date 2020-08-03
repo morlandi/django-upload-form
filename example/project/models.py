@@ -1,10 +1,12 @@
 import uuid
+import os
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from project.templatetags.utils_tags import format_datetime
+from .utils import auto_delete_filefields_on_delete
 
 
 ################################################################################
@@ -73,3 +75,6 @@ class File(BaseModel):
         if len(text) <= 0:
             text = str(self.id)
         return text
+
+models.signals.post_delete.connect(auto_delete_filefields_on_delete, sender=File)
+

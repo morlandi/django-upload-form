@@ -34,6 +34,9 @@ class MyUploadForm(UploadForm):
     def get_success_url(self, request=None):
         return '/'
 
-    def get_action(self):
+    def get_action(self, request=None):
         #return reverse('upload_form:test_view')
         return reverse('my_upload_target_view')
+
+    def get_accept(self, request=None):
+        return 'image/*'

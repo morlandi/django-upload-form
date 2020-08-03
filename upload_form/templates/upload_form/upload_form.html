@@ -1,12 +1,12 @@
-{% load i18n %}
+{% load i18n static %}
 
-<div id="umf_drop_area">
+<div class="uploadform_drop_area">
 
     <script type="text/javascript">
         var UPLOAD_FORM_PARALLEL_UPLOAD = {{UPLOAD_FORM_PARALLEL_UPLOAD|lower}};
     </script>
 
-    <form method="post" enctype="multipart/form-data" action="{{ action }}" class="umf_form">
+    <form method="post" enctype="multipart/form-data" action="{{ action }}" class="uploadform_form">
         {% csrf_token %}
 
         <p>{% trans 'Select multiple files with the file dialog or by dragging and dropping them onto the dashed region' %}</p>
@@ -22,9 +22,9 @@
         </div>
         {% endif %}
 
-        <input style="display: none;" type="file" name="files" id="udm_file_input" multiple onchange="UploadForm.handleFiles(this.files)">
-        <label class="button" for="udm_file_input">
-            <i class="glyphicon glyphicon-cloud-upload"></i>
+        <input style="display: none;" type="file" name="files[]" accept="{{accept}}" id="uploadform_file_input" multiple onchange="UploadForm.handleFiles(this.files)">
+        <label class="button" for="uploadform_file_input">
+            <img src="{% static 'upload_form/icons/cloud-upload-svgrepo-com.svg' %}" alt="{% trans 'upload' %}">
             <p>
                 {% trans 'Select some files' %}
             </p>
@@ -36,8 +36,7 @@
                     {% trans 'Press the button below to proceed with files upload' %}
                 </div>
                 <button type="submit" class="btn btn-success btn-lg">
-                    <i class="glyphicon glyphicon-upload"></i>
-                    &nbsp;&nbsp;{% trans 'Send' %}
+                    <img src="/static/upload_form/icons/cloud-upload-svgrepo-com.svg" class="icon">&nbsp;&nbsp;{% trans 'Send' %}
                 </button>
             </div>
             <div class="progress" style="display: none;">
@@ -45,15 +44,15 @@
                     role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
                 </div>
             </div>
-            <table class="umf_file_list">
+            <table class="uploadform_file_list">
                 <thead>
                     <tr>
                         <th>{% trans 'type' %}</th>
                         <th>{% trans 'name' %}</th>
                         <th>{% trans 'size' %}</th>
                         <th>
-                            <a href="#" class="umf_remove_all_files" title="remove all">
-                                <i class="glyphicon glyphicon-remove"></i>
+                            <a href="#" class="uploadform_remove_all_files" title="remove all">
+                                <img src="/static/upload_form/icons/trash-svgrepo-com.svg" class="icon">
                             </a>
                         </th>
                     </tr>

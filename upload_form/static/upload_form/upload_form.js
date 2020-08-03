@@ -1,7 +1,7 @@
 'use strict';
 
 $(document).ready(function($) {
-    UploadForm.initialize();
+    UploadForm.initialize($('.uploadform_drop_area'));
 });
 
 /*
@@ -13,9 +13,10 @@ https://stackoverflow.com/questions/23945494/use-html5-to-resize-an-image-before
 // Today we feel zealous enough to use the Module Pattern ;)
 window.UploadForm = (function() {
 
-    function initialize() {
-        UploadFormFileList.initialize('#umf_drop_area .file_list_wrapper');
-        var dropArea = $('#umf_drop_area');
+    function initialize(dropArea) {
+        //UploadFormFileList.initialize('.uploadform_drop_area .file_list_wrapper');
+        //var dropArea = $('.uploadform_drop_area');
+        UploadFormFileList.initialize(dropArea.find('.file_list_wrapper'));
         dropArea.on('dragenter dragover', function(event) {
             event.preventDefault();
             dropArea.addClass('highlight');
@@ -29,8 +30,11 @@ window.UploadForm = (function() {
     }
 
     function onDropAreaDrop(event) {
+
         event.preventDefault();
-        var dropArea = $('#umf_drop_area');
+        var target = $(event.target);
+        var dropArea = target.closest('.uploadform_drop_area');
+
         dropArea.removeClass('highlight');
         //var files = event.dataTransfer.files;
         //event.originalEvent.dataTransfer.dropEffect = 'copy';
@@ -58,7 +62,10 @@ window.UploadForm = (function() {
     function onFormSubmit(event)
     {
         event.preventDefault();
-        var dropArea = $('#umf_drop_area');
+
+        var target = $(event.target);
+        var dropArea = target.closest('.uploadform_drop_area');
+        //var dropArea = $('.uploadform_drop_area');
         var form = $(dropArea.find('form'));
 
         dropArea.find('.progress').show();
@@ -68,15 +75,15 @@ window.UploadForm = (function() {
         var filelist = UploadFormFileList.get_filelist();
         if (UPLOAD_FORM_PARALLEL_UPLOAD) {
             $(filelist).each(function(index, file) {
-                sendSingleFile(file, url);
+                sendSingleFile(dropArea, file, url);
             });
         }
         else {
-            sendMultipleFiles(filelist, url, progressBar);
+            sendMultipleFiles(dropArea, filelist, url, progressBar);
         }
     }
 
-    function sendSingleFile(file, url) {
+    function sendSingleFile(dropArea, file, url) {
         console.log('file: %o', file);
         var data = new FormData();
         data.set('files', file);
@@ -103,8 +110,9 @@ window.UploadForm = (function() {
         }).done(function(data) {
             switch (data.action) {
                 case 'replace':
-                    dropArea.replaceWith(data.html);
-                    initialize();
+                    //initialize(dropArea);
+                    // TODO: TO BE REFACTORED
+                    initialize($('.uploadform_drop_area'));
                     break;
                 case 'redirect':
                     //window.location.replace(data.url);
@@ -118,7 +126,7 @@ window.UploadForm = (function() {
         });
     }
 
-    function sendMultipleFiles(filelist, url, progressBar) {
+    function sendMultipleFiles(dropArea, filelist, url, progressBar) {
 
         // Retrieve files from form:
         //var data = new FormData(form.get(0));
@@ -128,7 +136,7 @@ window.UploadForm = (function() {
         var data = new FormData();
         $(filelist).each(function(index, file) {
             data.append('files', file);
-            data.append('title', 'ciao');
+            //data.append('title', 'ciao');
         });
 
         $.ajax({
@@ -153,7 +161,9 @@ window.UploadForm = (function() {
             switch (data.action) {
                 case 'replace':
                     dropArea.replaceWith(data.html);
-                    initialize();
+                    //initialize(dropArea);
+                    // TODO: TO BE REFACTORED
+                    initialize($('.uploadform_drop_area'));
                     break;
                 case 'redirect':
                     window.location.replace(data.url);

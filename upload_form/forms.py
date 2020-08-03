@@ -43,18 +43,33 @@ class UploadForm(forms.Form):
         """
         assert False, 'To be overridden'
 
-    def get_action(self):
+    def get_action(self, request=None):
         """
         Example:
             return reverse('upload_form:test')
         """
         assert False, 'To be overridden'
 
+    def get_accept(self, request=None):
+        """
+        Might be overridden
+        Example:
+            return 'image/*'
+        Defaults to: list of allowed file types
+        """
+        return None
+
     def as_html(self, request):
+
+        accept = self.get_accept()
+        if accept is None:
+            accept = ','.join(app_settings.get_allowed_file_types())
+
         html = render_to_string(
             'upload_form/upload_form.html', {
                 'file_errors': self.file_errors,
-                'action': self.get_action(),
+                'action': self.get_action(request),
+                'accept': accept,
                 'UPLOAD_FORM_PARALLEL_UPLOAD': app_settings.get_parallel_upload(),
             },
             request
@@ -74,22 +89,6 @@ class UploadForm(forms.Form):
             print('[%d]: "%s"' % (i, file))
         print('=' * 128)
 
-    # def list_allowed_file_types(self):
-    #     try:
-    #         from constance import config
-    #         str_types = config.UPLOAD_FORM_ALLOWED_FILE_TYPES
-    #     except:
-    #         str_types = getattr(settings, 'UPLOAD_FORM_ALLOWED_FILE_TYPES', "jpg jpeg png gif bmp tif tiff pic doc docx odt dot xls xlsx pdf dwg dxf txt")
-    #     return str_types.lower().split()
-
-    # def get_max_file_size_MB(self):
-    #     try:
-    #         from constance import config
-    #         max_size_MB = config.UPLOAD_FORM_MAX_FILE_SIZE_MB
-    #     except:
-    #         max_size_MB = getattr(settings, 'UPLOAD_FORM_MAX_FILE_SIZE_MB', 10)
-    #     return max_size_MB
-
     def is_valid(self):
 
         allowed_file_types = app_settings.get_allowed_file_types()
@@ -99,7 +98,7 @@ class UploadForm(forms.Form):
         files = self.files.getlist('files')
         for file in files:
             name, extension = os.path.splitext(file.name)
-            extension = extension[1:].lower()
+            extension = extension.lower()
             size_MB = file.size / (1024 * 1024)
             if extension not in allowed_file_types:
                 self.file_errors.append("%s: %s" % (file.name, _('File type not allowed')))

@@ -1,20 +1,21 @@
 
 
-#umf_drop_area {
+.uploadform_drop_area {
     border: 2px dashed #ccc;
     border-radius: 20px;
     font-family: sans-serif;
     margin: 0 auto;
     padding: 20px;
+    text-align: center;
 }
 
-#umf_drop_area.highlight {
+.uploadform_drop_area.highlight {
     border-color: #69f;
     background-color: #666;
 }
 
 
-#umf_drop_area label {
+.uploadform_drop_area label {
     width: 60%;
     padding: 10px;
     font-size: 1.8em;
@@ -28,39 +29,59 @@
     border-radius: 20px;
 }
 
-#umf_drop_area label i {
-    font-size: 1.5em;
+.uploadform_drop_area label p {
+    text-align: center;
 }
 
-#umf_drop_area .file_list_wrapper table {
+.uploadform_drop_area label img {
+    text-align: center;
+    height: 60px;
+    width: 100%;
+    color: #444 !important;
+}
+
+.uploadform_drop_area .file_list_wrapper table {
     margin: 0 auto;
     width: 80%;
     color: #999;
     border: 1px solid #999;
 }
 
-#umf_drop_area .file_list_wrapper table th,
-#umf_drop_area .file_list_wrapper table td {
+.uploadform_drop_area .file_list_wrapper table th,
+.uploadform_drop_area .file_list_wrapper table td {
     border: 1px solid #999;
     padding: 0 4px;
 }
 
-#umf_drop_area .file_list_wrapper table th {
+.uploadform_drop_area .file_list_wrapper table th {
     text-align: center;
     font-weight: bold;
     font-style: italic;
 }
 
-#umf_drop_area .errorlist {
+.uploadform_drop_area .file_list_wrapper td.delete {
+    text-align: center;
+}
+
+.uploadform_drop_area .file_list_wrapper img.icon {
+    height: 20px;
+}
+
+.uploadform_drop_area .errorlist {
     list-style: dash;
 }
 
-#umf_drop_area .errorlist li {
+.uploadform_drop_area .errorlist li {
     padding: 0;
     margin: 0;
     text-align: left;
 }
 
-#umf_drop_area .submit button {
+.uploadform_drop_area .submit button {
     margin: 10px 0;
+}
+
+.uploadform_file_list img.icon {
+    height: 12px;
+    /*width: 100%;*/
 }

@@ -1,32 +1,66 @@
 {% extends 'base_with_bootstrap.html' %}
-{% load utils_tags %}
+{% load i18n utils_tags %}
 
 
 {% block content %}
-    <h1>django-upload-form example (<a href="{% url 'upload_form:test_view' %}">test view: {% url 'upload_form:test_view' %}</a>)</h1>
+    <h1>django-upload-form example (<a href="{% url 'upload_form:test' %}">test view: {% url 'upload_form:test' %}</a>)</h1>
 
     <div id="form-container">
         {{ form_as_html }}
     </div>
 
-    <h3>Saved files ({{files|length}})</h3>
-    <table>
-        {% for file in files %}
+
+    <table class="container">
         <tr>
-            <td>{{file.created|format_datetime}}</td>
             <td>
-                {% if file.file %}
-                <a href="{{file.file.url}}">{{file}}</a>
+
+                <h3>{% trans 'Saved files' %} ({{files|length}})</h3>
+                {% if files.count > 0 %}
+                    <table class="simpletable">
+                        <tr>
+                            <th>{% trans 'created' %}</th>
+                            <th>{% trans 'file' %}</th>
+                            <th>{% trans 'size' %}</th>
+                        </tr>
+                        {% for file in files %}
+                        <tr>
+                            <td>{{file.created|format_datetime}}</td>
+                            <td>
+                                {% if file.file %}
+                                <a href="{{file.file.url}}">{{file}}</a>
+                                {% endif %}
+                            </td>
+                            <td class="numeric">
+                                {% if file.file %}
+                                {{file.file.size|filesizeformat}}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                    <a href="{% url 'clear_all_files' %}">{% trans 'Clear all' %}</a>
+                {% else %}
+                    <p>{% trans 'No files uploaded yet' %}</p>
                 {% endif %}
+
             </td>
-            <td class="numeric">
-                {% if file.file %}
-                {{file.file.size|filesizeformat}}
-                {% endif %}
+            <td>
+
+                <h3>{% trans 'Settings' %}</h3>
+                <table class="simpletable" style="max-width: 200px;">
+                    <tr>
+                        <th>{% trans 'key' %}</th>
+                        <th>{% trans 'value' %}</th>
+                    </tr>
+                    {% for row in app_settings %}
+                    <tr>
+                        <td>{{row.0}}</td><td>{{row.1}}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+
             </td>
         </tr>
-        {% endfor %}
-    </table>
 
 {% endblock content %}
 
@@ -45,10 +79,13 @@
         background-color: #ffc;
         max-width: 600px;
     }
-    table {
+    table.container td {
+        padding: 40px;
+    }
+    table.simpletable {
         border-collapse: collapse;
     }
-    table td {
+    table.simpletable td {
         border: 1px solid gray;
         padding: 2px 4px;
     }

@@ -66,8 +66,13 @@ At the very minimum, you need to override the following methods:
 - get_success_url(self)
     Determine the URL to redirect to when the form is successfully validated.
 
-- get_action(self)
+- get_action(self, request=None)
     Returns the url of the `target view` (see below).
+
+- get_accept(self, request=None)
+    Returns the value for the "accept" attribute of the file input element;
+    Defaults to: the list of allowed file types;
+    Example: "image/*" - which also trigger the lookup into the image gallery on mobile devices
 
 
 The target view
@@ -187,7 +192,7 @@ Below is the source code of the whole test.
         def get_success_url(self, request=None):
             return '/'
 
-        def get_action(self):
+        def get_action(self, request=None):
             return reverse('upload_form:test_view')
 
 

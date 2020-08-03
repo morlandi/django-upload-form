@@ -8,7 +8,7 @@ window.UploadFormFileList = (function() {
 
     function initialize(wrapper_element) {
         wrapper = $(wrapper_element);
-        wrapper.find('.umf_remove_all_files').on('click', clear);
+        wrapper.find('.uploadform_remove_all_files').on('click', clear);
         fileList = [];
     }
 
@@ -75,7 +75,7 @@ window.UploadFormFileList = (function() {
         console.log('fileList: %o', fileList);
         if (fileList.length <= 0) {
             wrapper.hide();
-            wrapper.find('.umf_remove_file').off();
+            wrapper.find('.uploadform_remove_file').off();
         }
         else {
             wrapper.show();
@@ -84,14 +84,14 @@ window.UploadFormFileList = (function() {
             fileDisplay.html('');
             $(fileList).each(function(index, file) {
                 fileDisplay.append(sprintf(
-                    '<tr><td class="filetype">%s</td><td class="filename">%s</td><td class="numeric">%s</td><td>%s</td></tr>',
+                    '<tr><td class="filetype">%s</td><td class="filename">%s</td><td class="numeric">%s</td><td class="delete">%s</td></tr>',
                     file.name.split('.').pop(),
                     file.name,
                     _fileSize(file.size),
-                    '<a href="#" class="umf_remove_file" title="remove this"><i class="glyphicon glyphicon-trash"></i></a>'
+                    '<a href="#" class="uploadform_remove_file" title="remove this"><img src="/static/upload_form/icons/trash-svgrepo-com.svg" class="icon"></a>'
                 ));
             });
-            wrapper.find('.umf_remove_file').off().on('click', deleteFileListRow);
+            wrapper.find('.uploadform_remove_file').off().on('click', deleteFileListRow);
         }
     }
 

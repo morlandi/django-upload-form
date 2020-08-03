@@ -25,7 +25,8 @@ SECRET_KEY = 's917$+d8re=1@0sg39l985abmhlen3mo(o7=xy4v86#ka2pdsa'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+#ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*', ]
 
 
 # Application definition
@@ -124,3 +125,9 @@ STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'public', 'static'))
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'public', 'media'))
+
+
+
+UPLOAD_FORM_PARALLEL_UPLOAD = False
+
+
