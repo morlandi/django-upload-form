@@ -63,7 +63,7 @@
     text-align: center;
 }
 
-.uploadform_drop_area .file_list_wrapper img.icon {
+.uploadform_drop_area .file_list_wrapper button img.icon {
     height: 20px;
 }
 

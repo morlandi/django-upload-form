@@ -73,23 +73,42 @@ window.UploadForm = (function() {
         var url = form.attr('action');
 
         var filelist = UploadFormFileList.get_filelist();
+
+        // if (UPLOAD_FORM_PARALLEL_UPLOAD) {
+        //     $(filelist).each(function(index, file) {
+        //         sendSingleFile(dropArea, file, url);
+        //     });
+        // }
+        // else {
+        //     sendMultipleFiles(dropArea, filelist, url, progressBar);
+        // }
+
         if (UPLOAD_FORM_PARALLEL_UPLOAD) {
+            // EXPERIMENTAL
+            // wait for multiple AJAX requests to finish [duplicate]
+            // see: https://stackoverflow.com/questions/6538470/jquery-deferred-waiting-for-multiple-ajax-requests-to-finish
+            var promises = [];
             $(filelist).each(function(index, file) {
-                sendSingleFile(dropArea, file, url);
+                var data = new FormData();
+                //data.append('title', 'ciao');
+                data.set('files', file);
+                promises.push(sendFormData(data, url, null));
             });
+            $.when.apply($, promises).done(onSendFormDataDone).fail(onSendFormDataFail);
         }
         else {
-            sendMultipleFiles(dropArea, filelist, url, progressBar);
+            var data = new FormData();
+            //data.append('title', 'ciao');
+            $(filelist).each(function(index, file) {
+                data.append('files', file);
+            });
+            var promise = sendFormData(data, url, progressBar);
+            promise.done(onSendFormDataDone).fail(onSendFormDataFail);
         }
     }
 
-    function sendSingleFile(dropArea, file, url) {
-        console.log('file: %o', file);
-        var data = new FormData();
-        data.set('files', file);
-        console.log('sending file "%o"', file);
-
-        $.ajax({
+    function sendFormData(data, url, progressBar) {
+        var promise = $.ajax({
             type: "POST",
             url: url,
             data: data,
@@ -100,81 +119,105 @@ window.UploadForm = (function() {
             xhr: function() {
                 var xhr = $.ajaxSettings.xhr();
                 xhr.upload.onprogress = function(e) {
-                    console.log(Math.floor(e.loaded / e.total *100) + '%');
-                    // var progress = sprintf("%d%%", Math.floor(e.loaded / e.total *100));
-                    // progressBar.css('width', progress);
-                    // progressBar.text(progress);
+                    //console.log(Math.floor(e.loaded / e.total *100) + '%');
+                    if (progressBar !== null) {
+                        var progress = sprintf("%d%%", Math.floor(e.loaded / e.total *100));
+                        progressBar.css('width', progress);
+                        progressBar.text(progress);
+                    }
                 };
               return xhr;
             }
-        }).done(function(data) {
-            switch (data.action) {
-                case 'replace':
-                    //initialize(dropArea);
-                    // TODO: TO BE REFACTORED
-                    initialize($('.uploadform_drop_area'));
-                    break;
-                case 'redirect':
-                    //window.location.replace(data.url);
-                    console.log('done');
-                    break;
-            }
-        }).fail(function(jqXHR, textStatus) {
-            console.log('ERROR: %o', jqXHR);
-            alert('ERROR: ' + jqXHR.statusText);
-            window.location.replace(url);
         });
+        return promise;
     }
 
-    function sendMultipleFiles(dropArea, filelist, url, progressBar) {
-
-        // Retrieve files from form:
-        //var data = new FormData(form.get(0));
-
-        // Retrieve files from fileList;
-        // As with regular form data, you can append multiple values with the same name.
-        var data = new FormData();
-        $(filelist).each(function(index, file) {
-            data.append('files', file);
-            //data.append('title', 'ciao');
-        });
-
-        $.ajax({
-            type: "POST",
-            url: url,
-            data: data,
-            dataType: 'json',
-            processData: false,
-            contentType: false,
-            headers: {"X-CSRFToken": getCookie('csrftoken')},
-            xhr: function() {
-                var xhr = $.ajaxSettings.xhr();
-                xhr.upload.onprogress = function(e) {
-                    console.log(Math.floor(e.loaded / e.total *100) + '%');
-                    var progress = sprintf("%d%%", Math.floor(e.loaded / e.total *100));
-                    progressBar.css('width', progress);
-                    progressBar.text(progress);
-                };
-              return xhr;
-            }
-        }).done(function(data) {
-            switch (data.action) {
-                case 'replace':
-                    dropArea.replaceWith(data.html);
-                    //initialize(dropArea);
-                    // TODO: TO BE REFACTORED
-                    initialize($('.uploadform_drop_area'));
-                    break;
-                case 'redirect':
-                    window.location.replace(data.url);
-                    break;
-            }
-        }).fail(function(jqXHR, textStatus) {
-            console.log('ERROR: %o', jqXHR);
-            alert('ERROR: ' + jqXHR.statusText);
-            window.location.replace(url);
-        });
+    function onSendFormDataDone(data) {
+        var response = data;
+        if (Array.isArray(data)) {
+            response = data[0];
+        }
+        switch (response.action) {
+            case 'replace':
+                dropArea.replaceWith(response.html);
+                //initialize(dropArea);
+                // TODO: TO BE REFACTORED
+                initialize($('.uploadform_drop_area'));
+                break;
+            case 'redirect':
+                window.location.replace(response.url);
+                break;
+        }
     }
+
+    function onSendFormDataFail(jqXHR, textStatus) {
+        console.log('ERROR: %o', jqXHR);
+        alert('ERROR: ' + jqXHR.statusText);
+        window.location.replace(url);
+    }
+
+    // function sendSingleFile(dropArea, file, url) {
+
+    //     console.log('sending file "%o"', file);
+    //     var data = new FormData();
+    //     data.set('files', file);
+
+    //     var promise = sendFormData(data, url, null);
+
+    //     promise.done(function(data) {
+    //         switch (data.action) {
+    //             case 'replace':
+    //                 //initialize(dropArea);
+    //                 // TODO: TO BE REFACTORED
+    //                 initialize($('.uploadform_drop_area'));
+    //                 break;
+    //             case 'redirect':
+    //                 //window.location.replace(data.url);
+    //                 console.log('done');
+    //                 break;
+    //         }
+    //     }).fail(function(jqXHR, textStatus) {
+    //         console.log('ERROR: %o', jqXHR);
+    //         alert('ERROR: ' + jqXHR.statusText);
+    //         window.location.replace(url);
+    //     });
+    // }
+
+    // function sendMultipleFiles(dropArea, filelist, url, progressBar) {
+
+    //     // Retrieve files from form:
+    //     //var data = new FormData(form.get(0));
+
+    //     console.log('sending files "%o"', filelist);
+
+    //     // Retrieve files from fileList;
+    //     // As with regular form data, you can append multiple values with the same name.
+    //     var data = new FormData();
+    //     $(filelist).each(function(index, file) {
+    //         data.append('files', file);
+    //         //data.append('title', 'ciao');
+    //     });
+
+    //     var promise = sendFormData(data, url, progressBar);
+
+    //     promise.done(function(data) {
+    //         switch (data.action) {
+    //             case 'replace':
+    //                 dropArea.replaceWith(data.html);
+    //                 //initialize(dropArea);
+    //                 // TODO: TO BE REFACTORED
+    //                 initialize($('.uploadform_drop_area'));
+    //                 break;
+    //             case 'redirect':
+    //                 window.location.replace(data.url);
+    //                 break;
+    //         }
+    //     }).fail(function(jqXHR, textStatus) {
+    //         console.log('ERROR: %o', jqXHR);
+    //         alert('ERROR: ' + jqXHR.statusText);
+    //         window.location.replace(url);
+    //     });
+    // }
 
     return {
         initialize: initialize,

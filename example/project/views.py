@@ -17,9 +17,9 @@ def index(request):
     form = MyUploadForm()
 
     app_settings = [
-        ['UPLOAD_FORM_ALLOWED_FILE_TYPES', upload_form_app_settings.get_allowed_file_types()],
         ['UPLOAD_FORM_MAX_FILE_SIZE_MB', upload_form_app_settings.get_max_file_size_MB()],
         ['UPLOAD_FORM_PARALLEL_UPLOAD', upload_form_app_settings.get_parallel_upload()],
+        ['UPLOAD_FORM_ALLOWED_FILE_TYPES', ', '.join(upload_form_app_settings.get_allowed_file_types())],
     ]
 
     return render(

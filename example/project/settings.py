@@ -127,7 +127,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'public', 'media'))
 
 
-
 UPLOAD_FORM_PARALLEL_UPLOAD = False
+UPLOAD_FORM_MAX_FILE_SIZE_MB = 10
 UPLOAD_FORM_ALLOWED_FILE_TYPES = ".jpg .jpeg .png .gif .bmp .tif .tiff .pic .doc .docx .odt .dot .xls .xlsx .pdf .dwg .dxf .txt .mp4"
 
