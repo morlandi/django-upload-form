@@ -1,0 +1,60 @@
+{% extends 'base_with_bootstrap.html' %}
+{% load utils_tags %}
+
+
+{% block content %}
+    <h1>django-upload-form example</h1>
+
+    <div id="form-container">
+        {{ form_as_html }}
+    </div>
+
+    <h3>Saved files ({{files|length}})</h3>
+    <table>
+        {% for file in files %}
+        <tr>
+            <td>{{file.created|format_datetime}}</td>
+            <td>
+                {% if file.file %}
+                <a href="{{file.file.url}}">{{file}}</a>
+                {% endif %}
+            </td>
+            <td class="numeric">
+                {% if file.file %}
+                {{file.file.size|filesizeformat}}
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+{% endblock content %}
+
+
+{% block extrajs %}
+    {{ block.super }}
+    {{form.media}}
+{% endblock extrajs %}
+
+
+{% block extrastyle %}
+    {{ block.super }}
+
+    <style>
+    #form-container {
+        background-color: #ffc;
+        max-width: 600px;
+    }
+    table {
+        border-collapse: collapse;
+    }
+    table td {
+        border: 1px solid gray;
+        padding: 2px 4px;
+    }
+    .numeric {
+        text-align: right;
+    }
+    </style>
+
+{% endblock extrastyle %}

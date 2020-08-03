@@ -3,13 +3,15 @@
 
 
 {% block extrastyle %}
+    {{block.super}}
     {% comment %}
-    <link rel="stylesheet" href="{% static 'upload_form.css' %}" type="text/css" charset="utf-8" />
+    <link rel="stylesheet" href="{% static 'upload_form/upload_form.css' %}" type="text/css" charset="utf-8" />
     {% endcomment %}
 {% endblock %}
 
 
 {% block extrajs %}
+    {{block.super}}
     {{form.media}}
     {% comment %}
     <script src="{% static 'upload_form.js' %}"></script>
