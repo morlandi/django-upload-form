@@ -3,7 +3,7 @@
 
 
 {% block content %}
-    <h1>django-upload-form example</h1>
+    <h1>django-upload-form example (<a href="{% url 'upload_form:test_view' %}">test view: {% url 'upload_form:test_view' %}</a>)</h1>
 
     <div id="form-container">
         {{ form_as_html }}
