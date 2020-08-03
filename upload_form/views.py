@@ -8,6 +8,13 @@ from django.http import JsonResponse
 from .forms import UploadForm
 
 
+# TODO: Check this:
+# "When and how to use Django FormView"
+# https://www.agiliq.com/blog/2019/01/django-formview/
+
+# See also:
+# https://stackoverflow.com/questions/8059160/django-apps-using-class-based-views-and-ajax
+
 class TestUploadForm(UploadForm):
 
     def form_valid(self, request):
@@ -23,10 +30,10 @@ class TestUploadForm(UploadForm):
         return '/'
 
     def get_action(self):
-        return reverse('upload_form:test_view')
+        return reverse('upload_form:test')
 
 
-def test_view(request):
+def test(request):
 
     if request.method == 'GET':
         form = TestUploadForm()
@@ -40,7 +47,7 @@ def test_view(request):
 
     return render(
         request,
-        'upload_form/test_view.html', {
+        'upload_form/test.html', {
             'form': form,
             'form_as_html': form.as_html(request),
         }

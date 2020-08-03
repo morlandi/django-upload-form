@@ -2,6 +2,10 @@
 
 <div id="umf_drop_area">
 
+    <script type="text/javascript">
+        var UPLOAD_FORM_PARALLEL_UPLOAD = {{UPLOAD_FORM_PARALLEL_UPLOAD|lower}};
+    </script>
+
     <form method="post" enctype="multipart/form-data" action="{{ action }}" class="umf_form">
         {% csrf_token %}
 
@@ -26,7 +30,7 @@
             </p>
         </label>
 
-        <div id="umf_file_list_wrapper" style="display: none;">
+        <div class="file_list_wrapper" style="display: none;">
             <div class="submit">
                 <div>
                     {% trans 'Press the button below to proceed with files upload' %}
@@ -48,7 +52,7 @@
                         <th>{% trans 'name' %}</th>
                         <th>{% trans 'size' %}</th>
                         <th>
-                            <a href="#" id="umf_remove_all_files" title="remove all">
+                            <a href="#" class="umf_remove_all_files" title="remove all">
                                 <i class="glyphicon glyphicon-remove"></i>
                             </a>
                         </th>
