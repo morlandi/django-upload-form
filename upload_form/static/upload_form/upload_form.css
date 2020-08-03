@@ -32,20 +32,20 @@
     font-size: 1.5em;
 }
 
-#umf_drop_area .umf_file_list {
+#umf_drop_area .file_list_wrapper table {
     margin: 0 auto;
     width: 80%;
     color: #999;
     border: 1px solid #999;
 }
 
-#umf_drop_area .umf_file_list th,
-#umf_drop_area .umf_file_list td {
+#umf_drop_area .file_list_wrapper table th,
+#umf_drop_area .file_list_wrapper table td {
     border: 1px solid #999;
     padding: 0 4px;
 }
 
-#umf_drop_area .umf_file_list th {
+#umf_drop_area .file_list_wrapper table th {
     text-align: center;
     font-weight: bold;
     font-style: italic;
