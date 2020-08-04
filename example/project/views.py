@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.http import HttpResponseRedirect
+from django.contrib import messages
 try:
     from django.urls import reverse
 except ModuleNotFoundError as e:
@@ -24,7 +25,7 @@ def index(request):
 
     return render(
         request,
-        'index.html', {
+        'pages/index.html', {
             'app_settings': app_settings,
             'form': form,
             'form_as_html': form.as_html(request),

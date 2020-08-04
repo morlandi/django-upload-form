@@ -22,7 +22,7 @@
         </div>
         {% endif %}
 
-        <input style="display: none;" type="file" name="files[]" accept="{{accept}}" capture="camera" id="uploadform_file_input" multiple onchange="UploadForm.handleFiles(this.files)">
+        <input style="display: none;" type="file" name="files[]" accept="{{accept}}" id="uploadform_file_input" multiple onchange="UploadForm.handleFiles(this.files)">
         <label class="button" for="uploadform_file_input">
             <img src="{% static 'upload_form/icons/cloud-upload-svgrepo-com.svg' %}" alt="{% trans 'upload' %}">
             <p>

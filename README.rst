@@ -326,4 +326,6 @@ References
 - `A strategy for handling multiple file uploads using JavaScript <https://medium.com/typecode/a-strategy-for-handling-multiple-file-uploads-using-javascript-eb00a77e15f>`_
 - `Use HTML5 to resize an image before upload <https://stackoverflow.com/questions/23945494/use-html5-to-resize-an-image-before-upload#24015367>`_
 - `How to package a Django app to be test-friendly? <https://stackoverflow.com/questions/41636794/how-to-package-a-django-app-to-be-test-friendly>`_
+- `Compress, resize and manage images using JavaScript directly from the browser <https://zocada.com/compress-resize-images-javascript-browser/>`_
+
 
