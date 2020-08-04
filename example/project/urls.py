@@ -27,6 +27,7 @@ urlpatterns = [
     path('upload_form/', include('upload_form.urls', namespace='upload_form')),
     #path('', TemplateView.as_view(template_name='index.html'), name='home'),
     path('', views.index, name='index'),
+    path('compress_images_test/', views.compress_images_test, name='compress_images_test'),
     path('clear_all_files/', views.clear_all_files, name='clear_all_files'),
     path('my_upload_target_view/', views.my_upload_target_view, name="my_upload_target_view")
     #path('', lambda x: redirect('upload_form/test_view/')),

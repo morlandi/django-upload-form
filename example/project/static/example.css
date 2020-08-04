@@ -22,6 +22,7 @@ main {
 }
 
 body.page-index a.nav-link.page-index,
+body.page-compress-image a.nav-link.page-compress-image,
 body.page-test a.nav-link.page-test {
     color: #fff;
 }

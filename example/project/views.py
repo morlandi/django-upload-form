@@ -34,6 +34,14 @@ def index(request):
     )
 
 
+def compress_images_test(request):
+    return render(
+        request,
+        'pages/compress_images_test.html', {
+        }
+    )
+
+
 def my_upload_target_view(request):
 
     assert request.method == 'POST'

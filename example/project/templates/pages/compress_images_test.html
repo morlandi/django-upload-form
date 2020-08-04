@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+
+{% block page-title %}{% trans 'Compress image test' %}{% endblock page-title %}
+{% block body-class%}compress-image{% endblock body-class %}
+
+
+{% block content %}
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-md-6">
+            <img id="source-image-vertical" src="{% static 'images/big-ben-vertical.jpg' %}">
+        </div>
+        <div class="col-md-6">
+            <img id="target-image-vertical" src="{% static 'images/spinner.jpg' %}">
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-6">
+            <img id="source-image-horizontal" src="{% static 'images/big-ben-horizontal.jpg' %}">
+        </div>
+        <div class="col-md-6">
+            <img id="target-image-horizontal" src="{% static 'images/spinner.jpg' %}">
+        </div>
+    </div>
+
+</div>
+
+{% endblock content %}
+
+
+{% block extrastyle %}
+    {{ block.super }}
+
+    <style>
+        img {
+            border: 2px solid black;
+            width: 300px;
+        }
+    </style>
+
+{% endblock extrastyle %}
+
+
+{% block extrajs %}
+    {{ block.super }}
+    <script src="https://unpkg.com/blob-util/dist/blob-util.min.js"></script>
+
+    <script>
+
+        function display_image_size(elements) {
+            $.each(elements, function(index, item) {
+                var w = item.naturalWidth;
+                var h = item.naturalHeight;
+                $(item).parent().append('<div>' + w + 'x' + h + '</div>');
+            })
+        }
+
+        /* Utility function to convert a canvas to a BLOB */
+        var dataURLToBlob = function(dataURL) {
+            var BASE64_MARKER = ';base64,';
+            if (dataURL.indexOf(BASE64_MARKER) == -1) {
+                var parts = dataURL.split(',');
+                var contentType = parts[0].split(':')[1];
+                var raw = parts[1];
+
+                return new Blob([raw], {type: contentType});
+            }
+
+            var parts = dataURL.split(BASE64_MARKER);
+            var contentType = parts[0].split(':')[1];
+            var raw = window.atob(parts[1]);
+            var rawLength = raw.length;
+
+            var uInt8Array = new Uint8Array(rawLength);
+
+            for (var i = 0; i < rawLength; ++i) {
+                uInt8Array[i] = raw.charCodeAt(i);
+            }
+
+            return new Blob([uInt8Array], {type: contentType});
+        }
+        /* End Utility function to convert a canvas to a BLOB      */
+
+
+        function compress_image(file, max_size) {
+
+            promise = $.Deferred();
+
+            // Load the image
+            var reader = new FileReader();
+            reader.onload = function (readerEvent) {
+                var image = new Image();
+                image.onload = function (imageEvent) {
+
+                    // Resize the image
+                    var canvas = document.createElement('canvas'),
+                        width = image.width,
+                        height = image.height;
+                    if (width > height) {
+                        if (width > max_size) {
+                            height *= max_size / width;
+                            width = max_size;
+                        }
+                    } else {
+                        if (height > max_size) {
+                            width *= max_size / height;
+                            height = max_size;
+                        }
+                    }
+                    canvas.width = width;
+                    canvas.height = height;
+                    canvas.getContext('2d').drawImage(image, 0, 0, width, height);
+                    var dataUrl = canvas.toDataURL('image/jpeg');
+                    var resizedImage = dataURLToBlob(dataUrl);
+                    $.event.trigger({
+                        type: "imageResized",
+                        blob: resizedImage,
+                        url: dataUrl
+                    });
+                    //console.log('dataUrl: %o', dataUrl);
+
+                    //$('#target-image').attr('src', dataUrl);
+
+                    promise.resolve(dataUrl);
+                }
+                image.src = readerEvent.target.result;
+            }
+            reader.readAsDataURL(file);
+
+            return promise;
+        }
+
+        $(document).ready(function($) {
+
+            display_image_size($('#source-image-vertical'));
+            display_image_size($('#source-image-horizontal'));
+
+            blobUtil.imgSrcToBlob($('#source-image-vertical').get(0).src).then(function (blob) {
+                compress_image(blob, 1000).done(function(dataUrl) {
+                    console.log(dataUrl);
+                    var targetImage = $('#target-image-vertical');
+                    targetImage.on('load', function(event) {
+                        display_image_size(targetImage);
+                    });
+                    $('#target-image-vertical').attr('src', dataUrl);
+                })
+            });
+
+            blobUtil.imgSrcToBlob($('#source-image-horizontal').get(0).src).then(function (blob) {
+                compress_image(blob, 1000).done(function(dataUrl) {
+                    console.log(dataUrl);
+                    var targetImage = $('#target-image-horizontal');
+                    targetImage.on('load', function(event) {
+                        display_image_size(targetImage);
+                    });
+                    $('#target-image-horizontal').attr('src', dataUrl);
+                })
+            });
+
+        });
+    </script>
+{% endblock extrajs %}
+
