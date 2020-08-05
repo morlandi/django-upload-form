@@ -20,6 +20,7 @@ class UploadForm(forms.Form):
         js = (
             'upload_form/upload_form.js',
             'upload_form/filelist.js',
+            'upload_form/resize_image.js',
         )
 
     def __init__(self, data=None, files=None):

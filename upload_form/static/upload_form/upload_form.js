@@ -94,20 +94,56 @@ window.UploadForm = (function() {
                 data.set('files', file);
                 promises.push(sendFormData(data, url, null));
             });
-            $.when.apply($, promises).done(onSendFormDataDone).fail(onSendFormDataFail);
+            $.when.apply($, promises)
+                .done(function(data) {
+                    onSendFormDataDone(dropArea, data)
+                })
+                .fail(onSendFormDataFail);
         }
         else {
             var data = new FormData();
             //data.append('title', 'ciao');
+
             $(filelist).each(function(index, file) {
-                data.append('files', file);
+                //data.append('files', file);
+                console.log('fileA: %o', file);
             });
-            var promise = sendFormData(data, url, progressBar);
-            promise.done(onSendFormDataDone).fail(onSendFormDataFail);
+
+            var deferreds = [];
+            $(filelist).each(function(index, file) {
+                deferreds.push(
+                    UploadFormResize.resize_image_to_File(file, 1000)
+                )
+            });
+
+            // https://stackoverflow.com/questions/5627284/pass-in-an-array-of-deferreds-to-when
+            $.when.apply($, deferreds).then(function() {
+                var objects = arguments;
+                $(objects).each(function(index, file) {
+                    // debugger
+                    // var file = new File([obj], "ciao.jpg");
+                    console.log('fileB: %o', file);
+                    data.append('files', file);
+                });
+
+                var promise = sendFormData(data, url, progressBar);
+                promise
+                    .done(function(data) {
+                        onSendFormDataDone(dropArea, data)
+                    })
+                    .fail(onSendFormDataFail);
+            });
+
+            //var promise = sendFormData(data, url, progressBar);
+            //promise.done(onSendFormDataDone).fail(onSendFormDataFail);
         }
     }
 
     function sendFormData(data, url, progressBar) {
+        // console.log('data: %o', data);
+        // for (var pair of data.entries()) { console.log('%o: %o', pair[0], pair[1]); }
+        // debugger
+
         var promise = $.ajax({
             type: "POST",
             url: url,
@@ -132,7 +168,7 @@ window.UploadForm = (function() {
         return promise;
     }
 
-    function onSendFormDataDone(data) {
+    function onSendFormDataDone(dropArea, data) {
         var response = data;
         if (Array.isArray(data)) {
             response = data[0];

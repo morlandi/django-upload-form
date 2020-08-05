@@ -48,6 +48,9 @@ def my_upload_target_view(request):
     assert request.is_ajax()
 
     form = MyUploadForm(request.POST, request.FILES)
+    # files = form.files.getlist('files')
+    # import ipdb; ipdb.set_trace()
+
     if form.is_valid():
         url = form.form_valid(request)
         return JsonResponse({'action': 'redirect', 'url': url, })

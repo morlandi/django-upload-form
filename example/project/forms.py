@@ -11,7 +11,7 @@ from.models import File
 
 class MyUploadForm(UploadForm):
 
-    description = forms.CharField()
+    #description = forms.CharField()
 
     def form_valid(self, request):
         print("*")
