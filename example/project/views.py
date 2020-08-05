@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.http import HttpResponseRedirect
 from django.contrib import messages
+from django.conf import settings
 try:
     from django.urls import reverse
 except ModuleNotFoundError as e:
@@ -21,6 +22,8 @@ def index(request):
         ['UPLOAD_FORM_MAX_FILE_SIZE_MB', upload_form_app_settings.get_max_file_size_MB()],
         ['UPLOAD_FORM_PARALLEL_UPLOAD', upload_form_app_settings.get_parallel_upload()],
         ['UPLOAD_FORM_ALLOWED_FILE_TYPES', ', '.join(upload_form_app_settings.get_allowed_file_types())],
+        ['MY_UPLOAD_FORM_ACCEPT', settings.MY_UPLOAD_FORM_ACCEPT],
+        ['MY_UPLOAD_FORM_MAX_IMAGE_SIZE', settings.MY_UPLOAD_FORM_MAX_IMAGE_SIZE],
     ]
 
     return render(

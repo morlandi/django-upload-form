@@ -69,10 +69,21 @@ At the very minimum, you need to override the following methods:
 - get_action(self, request=None)
     Returns the url of the `target view` (see below).
 
-- get_accept(self, request=None)
+Optionally, you can customize the following instance properties:
+
+- self.accept
     Returns the value for the "accept" attribute of the file input element;
     Defaults to: the list of allowed file types;
     Example: "image/*" - which also trigger the lookup into the image gallery on mobile devices
+
+- self.max_image_size
+    When > 0, images will be resized accordingly before uploading
+    Default: 0
+
+or override the corresponding methods:
+
+- def get_accept(self, request=None)
+- def get_max_image_size(self, request=None)
 
 
 The target view
@@ -87,11 +98,15 @@ The target view will receive the uploaded files with a POST request, and normall
 You will probably use the same view for form rendering (GET); this is quite common
 practice, but entirely optional.
 
-Example ('test_view'):
+Also note that, since upon form submission the POST request will be issued via Ajax,
+the target view should cooperate by returning a JsonResponse().
+
+In practice, in the target view **you should always follow the pattern below**,
+then cope with your specific needs in `MyUploadForm.form_valid()`:
 
 .. code:: python
 
-    def test_view(request):
+    def sample_view(request):
 
         if request.method == 'GET':
             form = TestUploadForm()
@@ -110,6 +125,22 @@ Example ('test_view'):
                 'form_as_html': form.as_html(request),
             }
         )
+
+or (when the initial rendering if provided by some other view):
+
+.. code:: python
+
+    def sample_view(request):
+
+        assert request.method == 'POST'
+        assert request.is_ajax()
+
+        form = MyUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            url = form.form_valid(request)
+            return JsonResponse({'action': 'redirect', 'url': url, })
+        else:
+            return JsonResponse({'action': 'replace', 'html': form.as_html(request), })
 
 
 Installation
@@ -259,7 +290,8 @@ The library will search these settings in the following order:
 .. code:: python
 
     UPLOAD_FORM_MAX_FILE_SIZE_MB = 12
-    UPLOAD_FROM_ALLOWED_FILE_TYPES = "png jpg jpeg gif"
+    UPLOAD_FROM_ALLOWED_FILE_TYPES = ".png .jpg .jpeg .gif"
+    UPLOAD_FORM_PARALLEL_UPLOAD = False  (experimental)
 
 or:
 
@@ -267,8 +299,9 @@ or:
 
     CONSTANCE_CONFIG = {
         ...
+        'UPLOAD_FROM_ALLOWED_FILE_TYPES': (".png .jpg .jpeg .gif", "Tipi di files abilitati all'upload"),
         'UPLOAD_FORM_MAX_FILE_SIZE_MB': (12, 'Dimensione massima files in upload (MB)'),
-        'UPLOAD_FROM_ALLOWED_FILE_TYPES': ("png jpg jpeg gif", "Tipi di files abilitati all'upload"),
+        'UPLOAD_FORM_PARALLEL_UPLOAD': (False, "Activate concurrent files upload"),
     }
 
 Howto upload a video
@@ -327,5 +360,3 @@ References
 - `Use HTML5 to resize an image before upload <https://stackoverflow.com/questions/23945494/use-html5-to-resize-an-image-before-upload#24015367>`_
 - `How to package a Django app to be test-friendly? <https://stackoverflow.com/questions/41636794/how-to-package-a-django-app-to-be-test-friendly>`_
 - `Compress, resize and manage images using JavaScript directly from the browser <https://zocada.com/compress-resize-images-javascript-browser/>`_
-
-

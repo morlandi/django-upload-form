@@ -28,6 +28,8 @@ class UploadForm(forms.Form):
         self.data = data
         self.files = files
         self.file_errors = []
+        self.accept = None
+        self.max_image_size = 0
 
     def form_valid(self, request):
         """
@@ -58,7 +60,13 @@ class UploadForm(forms.Form):
             return 'image/*'
         Defaults to: list of allowed file types
         """
-        return None
+        return self.accept
+
+    def get_max_image_size(self, request=None):
+        """
+        Might be overridden
+        """
+        return self.max_image_size
 
     def as_html(self, request):
 
@@ -71,6 +79,7 @@ class UploadForm(forms.Form):
                 'file_errors': self.file_errors,
                 'action': self.get_action(request),
                 'accept': accept,
+                'max_image_size': self.get_max_image_size(request),
                 'UPLOAD_FORM_PARALLEL_UPLOAD': app_settings.get_parallel_upload(),
             },
             request

@@ -6,12 +6,18 @@ except ModuleNotFoundError as e:
 from django import forms
 from django.contrib import messages
 from upload_form.forms import UploadForm
+from django.conf import settings
 from.models import File
 
 
 class MyUploadForm(UploadForm):
 
     #description = forms.CharField()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.accept = settings.MY_UPLOAD_FORM_ACCEPT
+        self.max_image_size = settings.MY_UPLOAD_FORM_MAX_IMAGE_SIZE
 
     def form_valid(self, request):
         print("*")
@@ -38,5 +44,5 @@ class MyUploadForm(UploadForm):
         #return reverse('upload_form:test_view')
         return reverse('my_upload_target_view')
 
-    def get_accept(self, request=None):
-        return 'image/*'
+    # def get_accept(self, request=None):
+    #     return 'image/*'

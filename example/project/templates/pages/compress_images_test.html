@@ -51,41 +51,42 @@
     <script src="{% static 'upload_form/utils.js' %}"></script>
     <script>
 
-        function display_image_size(elements) {
-            $.each(elements, function(index, item) {
-                var w = item.naturalWidth;
-                var h = item.naturalHeight;
-                var html = '<div>' + w + 'x' + h + '</div>';
-                $(item).parent().append(html);
-            })
+        function display_image_size(element) {
+            var item = $(element);
+            var parent = item.parent();
+            var w = item.get(0).naturalWidth;
+            var h = item.get(0).naturalHeight;
+            var html = '<div class="imgsize">' + w + 'x' + h + '</div>';
+            parent.find('.imgsize').empty();
+            parent.append(html);
+        }
+
+        function do_resize_image(source_image, target_image) {
+            var max_size = 1920;
+            blobUtil.imgSrcToBlob(source_image.get(0).src).then(function(blob) {
+                UploadFormUtils.resize_image(blob, max_size).done(function(dataurl_or_blob) {
+                    if (dataurl_or_blob instanceof Blob) {
+                        UploadFormUtils.blobToDataURL(dataurl_or_blob, function(dataUrl) {
+                            target_image.attr('src', dataUrl);
+                        });
+                    }
+                    else {
+                        target_image.attr('src', dataurl_or_blob);
+                    }
+                })
+            });
         }
 
         $(document).ready(function($) {
-
+            $('img').on('load', function(event) {
+                display_image_size(event.target);
+            });
             display_image_size($('#source-image-vertical'));
             display_image_size($('#source-image-horizontal'));
-
-            blobUtil.imgSrcToBlob($('#source-image-vertical').get(0).src).then(function(blob) {
-                UploadFormUtils.resize_image(blob, 1000).done(function(dataUrl) {
-                    var targetImage = $('#target-image-vertical');
-                    targetImage.on('load', function(event) {
-                        display_image_size(targetImage);
-                    });
-                    $('#target-image-vertical').attr('src', dataUrl);
-                })
-            });
-
-            blobUtil.imgSrcToBlob($('#source-image-horizontal').get(0).src).then(function(blob) {
-                UploadFormUtils.resize_image(blob, 1000).done(function(dataUrl) {
-                    var targetImage = $('#target-image-horizontal');
-                    targetImage.on('load', function(event) {
-                        display_image_size(targetImage);
-                    });
-                    $('#target-image-horizontal').attr('src', dataUrl);
-                })
-            });
-
+            do_resize_image($('#source-image-vertical'), $('#target-image-vertical'));
+            do_resize_image($('#source-image-horizontal'), $('#target-image-horizontal'));
         });
+
     </script>
 {% endblock extrajs %}
 

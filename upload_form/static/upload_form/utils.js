@@ -27,120 +27,129 @@ window.UploadFormUtils = (function() {
         return new Blob([uInt8Array], {type: contentType});
     }
 
-    // Adapted from:
-    // "Use HTML5 to resize an image before upload"
-    // https://stackoverflow.com/questions/23945494/use-html5-to-resize-an-image-before-upload#24015367
-    function do_resize_image(promise, file, maxSize, fileName) {
-
-        // Load the image
-        var reader = new FileReader();
-        reader.onload = function(readerEvent) {
-            var image = new Image();
-            image.onload = function(imageEvent) {
-
-                // Resize the image
-                var canvas = document.createElement('canvas');
-                var width = image.width;
-                var height = image.height;
-                var need_resize = false;
-                if (width > height) {
-                    if (width > maxSize) {
-                        height *= maxSize / width;
-                        width = maxSize;
-                        need_resize = true;
-                    }
-                } else {
-                    if (height > maxSize) {
-                        width *= maxSize / height;
-                        height = maxSize;
-                        need_resize = true;
-                    }
-                }
-
-                if (need_resize) {
-                    canvas.width = width;
-                    canvas.height = height;
-                    canvas.getContext('2d').drawImage(image, 0, 0, width, height);
-                    var dataUrl = canvas.toDataURL('image/jpeg');
-
-                    if (fileName) {
-                        var resizedImage = dataURLToBlob(dataUrl);
-                        var file = new File([resizedImage], fileName);
-                        promise.resolve(file);
-                    }
-                    else {
-                        promise.resolve(dataUrl);
-                    }
-                }
-                else {
-                    promise.resolve(file);
-                }
-
-
-                // $.event.trigger({
-                //     type: "imageResized",
-                //     blob: resizedImage,
-                //     url: dataUrl
-                // });
-                //console.log('dataUrl: %o', dataUrl);
-                //$('#target-image').attr('src', dataUrl);
-                //promise.resolve(dataUrl, resizedImage, fileName);
-                //promise.resolve(file);
-                //dataUrl, resizedImage, fileName);
-            }
-            image.src = readerEvent.target.result;
-        }
-
-        if (file.type.match(/image.*/)) {
-            reader.readAsDataURL(file);
-        }
-        else {
-            promise.resolve(file);
-        }
+    // https://stackoverflow.com/questions/23150333/html5-javascript-dataurl-to-blob-blob-to-dataurl
+    function blobToDataURL(blob, callback) {
+        var a = new FileReader();
+        a.onload = function(e) {callback(e.target.result);}
+        a.readAsDataURL(blob);
     }
 
-
     /**
-     * Update chart options.
+     * Resizes specified image to max_size.
      *
-     * Updates existing chart options with specified values;
+     * @param {file_or_blob} - a blob of file object containing the image to be resized
+     * @param {max_size} - max size of the desired image
      *
-     * @param {object} options - a dictionary of chart options
+     * @returns {promise} - an async value that, when resolved, will receive the resulting
+     *                      eventully resized image
      *
-     * @returns {boolean} true iif chart needs reload (for example: max_points has changed)
+     * How if works:
+     * - if the blob received is not an image,
+     *       or the source image is already smaller than max_size,
+     *       the original object will be returned (unchanged)
+     * - if the source blob is a File, a resized File will be returned
+     * - if the source blob is just a Blob, the dataURL of the resized image will be returned
+     *
+     * Note that:
+     * - if the source object is a File, you will always receive a File (either unchanged or resized)
+     * - if the source object is just a Blob, you wil reeceive either the unchanged Blob or a dataURL
+     *
      */
 
+    function resize_image(file_or_blob, max_size) {
 
+        // Adapted from:
+        // "Use HTML5 to resize an image before upload"
+        // https://stackoverflow.com/questions/23945494/use-html5-to-resize-an-image-before-upload#24015367
+        function _resize_image_inner() {
 
+            // Load the image
+            var reader = new FileReader();
+            reader.onload = function(readerEvent) {
+                var image = new Image();
+                image.onload = function(imageEvent) {
 
-    function resize_image(blob, maxSize) {
+                    // Calculate target width and height
+                    var width = image.width;
+                    var height = image.height;
+                    var need_resize = false;
+                    if (width <= 0 || height <=0) {
+                        need_resize = false;
+                    }
+                    else {
+                        if (width > height) {
+                            if (width > _maxSize) {
+                                height *= _maxSize / width;
+                                width = _maxSize;
+                                need_resize = true;
+                            }
+                        } else {
+                            if (height > _maxSize) {
+                                width *= _maxSize / height;
+                                height = _maxSize;
+                                need_resize = true;
+                            }
+                        }
+                    }
 
-        //maxSize = 10000;
+                    // Either resize the image ...
+                    var canvas = document.createElement('canvas');
+                    if (need_resize) {
+                        console.log("resize_image(%d): Resizing %o from %dx%d to %dx%d", _maxSize, (_blob instanceof File) ? _blob.name : "blob", image.width, image.height, width, height);
+                        canvas.width = width;
+                        canvas.height = height;
+                        canvas.getContext('2d').drawImage(image, 0, 0, width, height);
+                        var dataUrl = canvas.toDataURL('image/jpeg');
 
-        var promise = $.Deferred();
-
-        if (blob.type.match(/image.*/)) {
-
-            if (blob instanceof File) {
-                do_resize_image(promise, blob, maxSize, blob.name);
+                        if (_blob instanceof File) {
+                            var resizedImage = dataURLToBlob(dataUrl);
+                            var file = new File([resizedImage], _blob.name);
+                            _promise.resolve(file);
+                        }
+                        else {
+                            _promise.resolve(dataUrl);
+                        }
+                    }
+                    else {
+                        // ... or return blob unchanged
+                        console.log("resize_image(%d): No resize needed for %o (%dx%d)", _maxSize, (_blob instanceof File) ? _blob.name : "blob", image.width, image.height);
+                        _promise.resolve(_blob);
+                    }
+                    // $.event.trigger({
+                    //     type: "imageResized",
+                    //     blob: resizedImage,
+                    //     url: dataUrl
+                    // });
+                }
+                image.src = readerEvent.target.result;
             }
-            else if (blob instanceof Blob) {
-                do_resize_image(promise, blob, maxSize, null);
+
+            reader.readAsDataURL(_blob);
+        }
+
+
+        var _promise = $.Deferred();
+        var _blob = file_or_blob;
+        var _maxSize = max_size;
+
+        if (_blob instanceof Blob) {
+            if (_blob.type.match(/image.*/)) {
+                _resize_image_inner();
             }
             else {
-                promise.reject('Unable to resize unknown object');
+                _promise.resolve(file);
             }
-
         }
         else {
-            promise.resolve(file);
+            _promise.reject('Unable to resize unknown object');
         }
 
-
-        return promise;
+        return _promise;
     }
 
     return {
+        dataURLToBlob: dataURLToBlob,
+        blobToDataURL: blobToDataURL,
         resize_image: resize_image
     };
 

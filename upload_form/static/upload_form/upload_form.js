@@ -104,38 +104,42 @@ window.UploadForm = (function() {
             var data = new FormData();
             //data.append('title', 'ciao');
 
-            $(filelist).each(function(index, file) {
-                //data.append('files', file);
-                console.log('fileA: %o', file);
-            });
-
-            var deferreds = [];
-            $(filelist).each(function(index, file) {
-                deferreds.push(
-                    UploadFormUtils.resize_image(file, 1000)
-                )
-            });
-
-            // https://stackoverflow.com/questions/5627284/pass-in-an-array-of-deferreds-to-when
-            $.when.apply($, deferreds).then(function() {
-                var objects = arguments;
-                $(objects).each(function(index, file) {
-                    // debugger
-                    // var file = new File([obj], "ciao.jpg");
-                    console.log('fileB: %o', file);
+            if (MAX_IMAGE_SIZE <= 0 ) {
+                $(filelist).each(function(index, file) {
                     data.append('files', file);
                 });
-
                 var promise = sendFormData(data, url, progressBar);
                 promise
                     .done(function(data) {
                         onSendFormDataDone(dropArea, data)
                     })
                     .fail(onSendFormDataFail);
-            });
+            }
+            else {
+                var deferreds = [];
+                $(filelist).each(function(index, file) {
+                    deferreds.push(
+                        UploadFormUtils.resize_image(file, MAX_IMAGE_SIZE)
+                    )
+                });
 
-            //var promise = sendFormData(data, url, progressBar);
-            //promise.done(onSendFormDataDone).fail(onSendFormDataFail);
+                // https://stackoverflow.com/questions/5627284/pass-in-an-array-of-deferreds-to-when
+                $.when.apply($, deferreds).then(function() {
+                    var objects = arguments;
+                    $(objects).each(function(index, file) {
+                        // debugger
+                        // var file = new File([obj], "ciao.jpg");
+                        data.append('files', file);
+                    });
+
+                    var promise = sendFormData(data, url, progressBar);
+                    promise
+                        .done(function(data) {
+                            onSendFormDataDone(dropArea, data)
+                        })
+                        .fail(onSendFormDataFail);
+                });
+            }
         }
     }
 
