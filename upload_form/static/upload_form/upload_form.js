@@ -112,7 +112,7 @@ window.UploadForm = (function() {
             var deferreds = [];
             $(filelist).each(function(index, file) {
                 deferreds.push(
-                    UploadFormResize.resize_image_to_File(file, 1000)
+                    UploadFormUtils.resize_image(file, 1000)
                 )
             });
 

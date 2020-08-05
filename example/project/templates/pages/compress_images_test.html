@@ -48,19 +48,14 @@
 {% block extrajs %}
     {{ block.super }}
     <script src="https://unpkg.com/blob-util/dist/blob-util.min.js"></script>
-    <script src="{% static 'upload_form/resize_image.js' %}"></script>
+    <script src="{% static 'upload_form/utils.js' %}"></script>
     <script>
 
-        function display_image_size(elements, name) {
+        function display_image_size(elements) {
             $.each(elements, function(index, item) {
                 var w = item.naturalWidth;
                 var h = item.naturalHeight;
-
-                var html = '<div>' + w + 'x' + h;
-                if (name) {
-                    html += ' ' + name;
-                }
-                html += '</div>';
+                var html = '<div>' + w + 'x' + h + '</div>';
                 $(item).parent().append(html);
             })
         }
@@ -71,7 +66,7 @@
             display_image_size($('#source-image-horizontal'));
 
             blobUtil.imgSrcToBlob($('#source-image-vertical').get(0).src).then(function(blob) {
-                UploadFormResize.resize_image_to_DataURL(blob, 1000).done(function(dataUrl) {
+                UploadFormUtils.resize_image(blob, 1000).done(function(dataUrl) {
                     var targetImage = $('#target-image-vertical');
                     targetImage.on('load', function(event) {
                         display_image_size(targetImage);
@@ -81,7 +76,7 @@
             });
 
             blobUtil.imgSrcToBlob($('#source-image-horizontal').get(0).src).then(function(blob) {
-                UploadFormResize.resize_image_to_DataURL(blob, 1000).done(function(dataUrl) {
+                UploadFormUtils.resize_image(blob, 1000).done(function(dataUrl) {
                     var targetImage = $('#target-image-horizontal');
                     targetImage.on('load', function(event) {
                         display_image_size(targetImage);
