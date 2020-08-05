@@ -85,3 +85,7 @@
     height: 12px;
     /*width: 100%;*/
 }
+
+.file_list_wrapper .progress {
+    margin-bottom: 10px;
+}

@@ -3,6 +3,14 @@
 History
 =======
 
+v0.4.0
+------
+* optionally resize images before uploading
+* parallel uploading (experimental)
+* Example project added
+* some miscellaneous improvements recovered from experimental branches
+* removed dependency on sprintf js library
+
 v0.3.1
 ------
 * fix Readme to keep twine happy

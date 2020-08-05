@@ -83,13 +83,27 @@ window.UploadFormFileList = (function() {
 
             fileDisplay.html('');
             $(fileList).each(function(index, file) {
-                fileDisplay.append(sprintf(
-                    '<tr><td class="filetype">%s</td><td class="filename">%s</td><td class="numeric">%s</td><td class="delete">%s</td></tr>',
-                    file.name.split('.').pop(),
-                    file.name,
-                    _fileSize(file.size),
-                    '<a href="#" class="uploadform_remove_file" title="remove this"><img src="/static/upload_form/icons/trash-svgrepo-com.svg" class="icon"></a>'
-                ));
+
+                // fileDisplay.append(sprintf(
+                //     '<tr><td class="filetype">%s</td><td class="filename">%s</td><td class="numeric">%s</td><td class="delete">%s</td></tr>',
+                //     file.name.split('.').pop(),
+                //     file.name,
+                //     _fileSize(file.size),
+                //     '<a href="#" class="uploadform_remove_file" title="remove this"><img src="/static/upload_form/icons/trash-svgrepo-com.svg" class="icon"></a>'
+                // ));
+
+                var fname = file.name;
+                var ftype = file.name.split('.').pop();
+                var fsize = _fileSize(file.size);
+                var rmlink = '<a href="#" class="uploadform_remove_file" title="remove this"><img src="/static/upload_form/icons/trash-svgrepo-com.svg" class="icon"></a>';
+                fileDisplay.append(
+                    '<tr>' +
+                    '<td class="filetype">' + ftype + '</td>' +
+                    '<td class="filename">' + fname + '</td>' +
+                    '<td class="numeric">' + fsize + '</td>' +
+                    '<td class="delete">' + rmlink + '</td>' +
+                    '</tr>'
+                );
             });
             wrapper.find('.uploadform_remove_file').off().on('click', deleteFileListRow);
         }

@@ -161,7 +161,8 @@ window.UploadForm = (function() {
                 xhr.upload.onprogress = function(e) {
                     //console.log(Math.floor(e.loaded / e.total *100) + '%');
                     if (progressBar !== null) {
-                        var progress = sprintf("%d%%", Math.floor(e.loaded / e.total *100));
+                        //var progress = sprintf("%d%%", Math.floor(e.loaded / e.total *100));
+                        var progress = Math.floor(e.loaded / e.total *100) + '%';
                         progressBar.css('width', progress);
                         progressBar.text(progress);
                     }
