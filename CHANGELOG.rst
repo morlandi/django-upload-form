@@ -3,6 +3,10 @@
 History
 =======
 
+v0.4.1
+------
+* Readme updated and fixed
+
 v0.4.0
 ------
 * optionally resize images before uploading
