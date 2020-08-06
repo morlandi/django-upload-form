@@ -21,12 +21,14 @@ with the following features:
 
 2) during submission:
 
-    - image files are optionally resized up to a configurabile max resolution (TODO: recover this from "experiments" branch)
+    - image files are optionally resized up to a configurabile max resolution
     - a progress bar is shown during files upload
 
 3) after submission:
 
-    - TODO: ADD MORE DETAILS HERE
+    - a target view receives the uploaded files via an Ajax POST request
+    - here, you will validate the form ...
+    - ... and use the received `files` at your will
 
 All this is obtained by leveraging HTML5 specific capabilities, and applying some clever (in my opinion)
 and sometimes hacky techniques I learned from a few selected articles, listed in the `References`
@@ -74,10 +76,11 @@ Optionally, you can customize the following instance properties:
 - self.accept
     Returns the value for the "accept" attribute of the file input element;
     Defaults to: the list of allowed file types;
-    Example: "image/*" - which also trigger the lookup into the image gallery on mobile devices
+    Example: `image/\*` - which also trigger the lookup into the image gallery on mobile devices
 
 - self.max_image_size
-    When > 0, images will be resized accordingly before uploading
+    When > 0, images will be resized accordingly before uploading.
+    The required size is expressed in pixels.
     Default: 0
 
 or override the corresponding methods:
@@ -167,6 +170,65 @@ then add 'upload_form' to your INSTALLED_APPS:
         'upload_form',
     ]
 
+
+App Settings
+------------
+
+Some settings are provided for optional customization.
+
+The library will search these settings in the following order:
+
+    - as `Django Constance` dynamic settings (see `https://github.com/jazzband/django-constance <https://github.com/jazzband/django-constance>`_)
+    - failing that, in project's settings
+    - failing that, a suitable "safe" default value is used
+
+.. code:: python
+
+    UPLOAD_FORM_MAX_FILE_SIZE_MB = 12
+    UPLOAD_FROM_ALLOWED_FILE_TYPES = ".png .jpg .jpeg .gif"
+    UPLOAD_FORM_PARALLEL_UPLOAD = False  (experimental)
+
+or:
+
+.. code:: python
+
+    CONSTANCE_CONFIG = {
+        ...
+        'UPLOAD_FROM_ALLOWED_FILE_TYPES': (".png .jpg .jpeg .gif", "Tipi di files abilitati all'upload"),
+        'UPLOAD_FORM_MAX_FILE_SIZE_MB': (12, 'Dimensione massima files in upload (MB)'),
+        'UPLOAD_FORM_PARALLEL_UPLOAD': (False, "Activate concurrent files upload"),
+    }
+
+
+Example project
+---------------
+
+A simple Django project is available in folder 'example'; use it as follows:
+
+.. code-block:: bash
+
+    # Move to the project folder
+    cd ./example
+
+    # Install Django dependencies
+    pip install -r requirements.txt
+
+    # Initialize database tables
+    python manage.py migrate
+
+    # Create a super-user for the admin:
+    python manage.py createsuperuser
+
+    # Run the project
+    python manage.py runserver
+
+the visit either http://127.0.0.1:8000/ or http://127.0.0.1:8000/admin/
+
+.. image:: screenshots/example/001.png
+
+.. image:: screenshots/example/002.png
+
+.. image:: screenshots/example/003.png
 
 Sample usage
 ------------
@@ -276,34 +338,6 @@ Below is the source code of the whole test.
     {% endblock content %}
 
 
-App Settings
-------------
-
-Some settings are provided for optional customization.
-
-The library will search these settings in the following order:
-
-    - as `Django Constance` dynamic settings (see `https://github.com/jazzband/django-constance <https://github.com/jazzband/django-constance>`_)
-    - failing that, in project's settings
-    - failing that, a suitable "safe" default value is used
-
-.. code:: python
-
-    UPLOAD_FORM_MAX_FILE_SIZE_MB = 12
-    UPLOAD_FROM_ALLOWED_FILE_TYPES = ".png .jpg .jpeg .gif"
-    UPLOAD_FORM_PARALLEL_UPLOAD = False  (experimental)
-
-or:
-
-.. code:: python
-
-    CONSTANCE_CONFIG = {
-        ...
-        'UPLOAD_FROM_ALLOWED_FILE_TYPES': (".png .jpg .jpeg .gif", "Tipi di files abilitati all'upload"),
-        'UPLOAD_FORM_MAX_FILE_SIZE_MB': (12, 'Dimensione massima files in upload (MB)'),
-        'UPLOAD_FORM_PARALLEL_UPLOAD': (False, "Activate concurrent files upload"),
-    }
-
 Howto upload a video
 --------------------
 
@@ -359,4 +393,3 @@ References
 - `A strategy for handling multiple file uploads using JavaScript <https://medium.com/typecode/a-strategy-for-handling-multiple-file-uploads-using-javascript-eb00a77e15f>`_
 - `Use HTML5 to resize an image before upload <https://stackoverflow.com/questions/23945494/use-html5-to-resize-an-image-before-upload#24015367>`_
 - `How to package a Django app to be test-friendly? <https://stackoverflow.com/questions/41636794/how-to-package-a-django-app-to-be-test-friendly>`_
-- `Compress, resize and manage images using JavaScript directly from the browser <https://zocada.com/compress-resize-images-javascript-browser/>`_
