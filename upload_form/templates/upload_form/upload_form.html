@@ -7,10 +7,9 @@
         var MAX_IMAGE_SIZE = {{max_image_size}};
     </script>
 
-    <form method="post" enctype="multipart/form-data" action="{{ action }}" class="uploadform_form">
+    <form method="post" enctype="multipart/form-data" action="{{ action }}" class="uploadform_form" novalidate>
         {% csrf_token %}
 
-        <p>{% trans 'Select multiple files with the file dialog or by dragging and dropping them onto the dashed region' %}</p>
 
         {% if file_errors %}
         <div class="alert alert-danger">
@@ -23,13 +22,31 @@
         </div>
         {% endif %}
 
-        <input style="display: none;" type="file" name="files[]" accept="{{accept}}" id="uploadform_file_input" multiple onchange="UploadForm.handleFiles(this.files)">
-        <label class="button" for="uploadform_file_input">
-            <img src="{% static 'upload_form/icons/cloud-upload-svgrepo-com.svg' %}" alt="{% trans 'upload' %}">
-            <p>
-                {% trans 'Select some files' %}
-            </p>
-        </label>
+        {% if form.fields|length %}
+        <div class="extra_fields">
+            {% for field in form %}
+                <div class="form-row{% if field.errors %} errors{% endif %} field-{{ field.html_name }}">
+                    {{ field.label_tag }} {{ field }}
+                    {% if field.help_text %}
+                    <p class="help">{{ field.help_text|safe }}</p>
+                    {% endif %}
+                    {{ field.errors }}
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="file_list_input">
+            <p>{% trans 'Select multiple files with the file dialog or by dragging and dropping them onto the dashed region' %}</p>
+
+            <input style="display: none;" type="file" name="files[]" accept="{{accept}}" id="uploadform_file_input" multiple onchange="UploadForm.handleFiles(this.files)">
+            <label class="button" for="uploadform_file_input">
+                <img src="{% static 'upload_form/icons/cloud-upload-svgrepo-com.svg' %}" alt="{% trans 'upload' %}">
+                <p>
+                    {% trans 'Select some files' %}
+                </p>
+            </label>
+        </div>
 
         <div class="file_list_wrapper" style="display: none;">
             <div class="submit">

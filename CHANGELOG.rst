@@ -3,6 +3,10 @@
 History
 =======
 
+v0.4.2
+------
+* Include optional extra form fields in upload form
+
 v0.4.1
 ------
 * Readme updated and fixed

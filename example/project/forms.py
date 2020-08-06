@@ -12,7 +12,7 @@ from.models import File
 
 class MyUploadForm(UploadForm):
 
-    #description = forms.CharField()
+    description = forms.CharField(required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -28,11 +28,12 @@ class MyUploadForm(UploadForm):
 
         self.dump()
         files = self.files.getlist('files')
+        description = self.cleaned_data['description']
         for i, file in enumerate(files):
             messages.info(request, '[%d]: "%s" received' % (i, file))
             # image = form.cleaned_data.get('img')
             # foo.imagefield.save(image.name, image)
-            obj = File.objects.create(description=file.name)
+            obj = File.objects.create(description=description if description else file.name)
             obj.file.save(file.name, file)
 
         return self.get_success_url(request)

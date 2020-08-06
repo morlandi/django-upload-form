@@ -24,6 +24,7 @@
                         <th>{% trans 'file' %}</th>
                         <th>{% trans 'size' %}</th>
                         <th>{% trans 'image info' %}</th>
+                        <th>{% trans 'description' %}</th>
                     </tr>
                     {% for file in files %}
                     <tr>
@@ -42,6 +43,9 @@
                             {% if file.file %}
                             {{file.file|imagesize}}
                             {% endif %}
+                        </td>
+                        <td>
+                            {{file.description}}
                         </td>
                     </tr>
                     {% endfor %}

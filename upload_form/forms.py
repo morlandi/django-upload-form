@@ -76,6 +76,7 @@ class UploadForm(forms.Form):
 
         html = render_to_string(
             'upload_form/upload_form.html', {
+                'form': self,
                 'file_errors': self.file_errors,
                 'action': self.get_action(request),
                 'accept': accept,
@@ -115,4 +116,6 @@ class UploadForm(forms.Form):
             if size_MB > max_file_size_MB:
                 self.file_errors.append("%s: %s" % (file.name, _('File size exceeds %s MB limit') % str(max_file_size_MB)))
 
-        return len(self.file_errors) <= 0
+        #return len(self.file_errors) <= 0
+        valid = super().is_valid() and len(self.file_errors) <= 0
+        return valid

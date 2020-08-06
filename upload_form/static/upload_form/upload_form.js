@@ -102,6 +102,11 @@ window.UploadForm = (function() {
         }
         else {
             var data = new FormData();
+
+            var inputs = form.serializeArray();
+            $.each(inputs, function (i, input) {
+                data.append(input.name, input.value);
+            });
             //data.append('title', 'ciao');
 
             if (MAX_IMAGE_SIZE <= 0 ) {

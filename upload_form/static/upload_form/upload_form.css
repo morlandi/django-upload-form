@@ -15,7 +15,7 @@
 }
 
 
-.uploadform_drop_area label {
+.uploadform_drop_area .file_list_input label {
     width: 60%;
     padding: 10px;
     font-size: 1.8em;
@@ -81,11 +81,20 @@
     margin: 10px 0;
 }
 
-.uploadform_file_list img.icon {
+.uploadform_drop_area .uploadform_file_list img.icon {
     height: 12px;
     /*width: 100%;*/
 }
 
-.file_list_wrapper .progress {
+.uploadform_drop_area .file_list_wrapper .progress {
     margin-bottom: 10px;
 }
+
+.uploadform_drop_area .extra_fields {
+    margin-bottom: 10px;
+}
+
+.uploadform_drop_area .extra_fields .form-row.errors {
+    border: 1px solid red;
+}
+
