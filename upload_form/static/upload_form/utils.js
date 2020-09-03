@@ -137,7 +137,7 @@ window.UploadFormUtils = (function() {
                 _resize_image_inner();
             }
             else {
-                _promise.resolve(file);
+                _promise.resolve(_blob);
             }
         }
         else {
