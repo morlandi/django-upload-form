@@ -3,6 +3,11 @@
 History
 =======
 
+v0.4.3
+------
+* fix a js error when uploading non-image files; this was a regression introduced with image resizing
+* fix to use multiple upload forms in a single HTML page
+
 v0.4.2
 ------
 * Include optional extra form fields in upload form

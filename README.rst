@@ -199,6 +199,43 @@ or:
         'UPLOAD_FORM_PARALLEL_UPLOAD': (False, "Activate concurrent files upload"),
     }
 
+Using multiple upload forms in a single HTML page
+-------------------------------------------------
+
+The technique used to collect files for upload is:
+
+- render an **hidden** file input element with "multiple" attribute
+- use a label styled to look like a button, so people will realize they can click it to bring up the file selection dialog
+
+This works, since pressing a label basically triggers the focus event for the bound input;
+if it is a file input, it works out as a click event, resulting in opening a file browser.
+
+.. code:: html
+
+    <input style="display: none;" type="file" name="files[]" accept="{{accept}}" id="uploadform_file_input" multiple onchange="UploadForm.handleFiles(this.files)">
+    <label class="button" for="uploadform_file_input">
+        <img src="{% static 'upload_form/icons/cloud-upload-svgrepo-com.svg' %}" alt="{% trans 'upload' %}">
+        <p>
+            {% trans 'Select some files' %}
+        </p>
+    </label>
+
+Unfortunately, this means we had to assign a specific id to the <input> element;
+which in turn means we can't use two upload forms in a single HTML page.
+
+However, you can also implicitly bind a label to an input by inclusion, thus avoiding the id altoghether:
+
+.. code:: html
+
+    <label class="button">
+        <input style="display: none;" type="file" name="files[]" accept="{{accept}}" multiple onchange="UploadForm.handleFiles(this.files)">
+        <img src="{% static 'upload_form/icons/cloud-upload-svgrepo-com.svg' %}" alt="{% trans 'upload' %}">
+        <p>
+            {% trans 'Select some files' %}
+        </p>
+    </label>
+
+This fix has been added in `v0.4.3`.
 
 Example project
 ---------------
@@ -393,3 +430,4 @@ References
 - `A strategy for handling multiple file uploads using JavaScript <https://medium.com/typecode/a-strategy-for-handling-multiple-file-uploads-using-javascript-eb00a77e15f>`_
 - `Use HTML5 to resize an image before upload <https://stackoverflow.com/questions/23945494/use-html5-to-resize-an-image-before-upload#24015367>`_
 - `How to package a Django app to be test-friendly? <https://stackoverflow.com/questions/41636794/how-to-package-a-django-app-to-be-test-friendly>`_
+- `HTML Label name instead of ID? <https://stackoverflow.com/questions/28031001/html-label-name-instead-of-id#28031213>`_

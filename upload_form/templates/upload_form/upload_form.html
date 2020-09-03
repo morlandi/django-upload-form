@@ -39,8 +39,8 @@
         <div class="file_list_input">
             <p>{% trans 'Select multiple files with the file dialog or by dragging and dropping them onto the dashed region' %}</p>
 
-            <input style="display: none;" type="file" name="files[]" accept="{{accept}}" id="uploadform_file_input" multiple onchange="UploadForm.handleFiles(this.files)">
-            <label class="button" for="uploadform_file_input">
+            <label class="button">
+                <input style="display: none;" type="file" name="files[]" accept="{{accept}}" multiple onchange="UploadForm.handleFiles(this.files)">
                 <img src="{% static 'upload_form/icons/cloud-upload-svgrepo-com.svg' %}" alt="{% trans 'upload' %}">
                 <p>
                     {% trans 'Select some files' %}
