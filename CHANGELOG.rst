@@ -3,6 +3,12 @@
 History
 =======
 
+v0.5.0
+------
+* typo fixes
+* per-class "allowed_file_types" list
+* better explanation of the difference between "accept" and "allowed_file_types"
+
 v0.4.3
 ------
 * fix a js error when uploading non-image files; this was a regression introduced with image resizing
