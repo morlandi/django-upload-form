@@ -73,9 +73,13 @@ At the very minimum, you need to override the following methods:
 
 Optionally, you can customize the following instance properties:
 
+- self.allowed_file_types
+    List of allowed file types (ex: '.xls .xlsx .pdf');
+    Default to: None, which means we'll use the corresponding setting `UPLOAD_FORM_ALLOWED_FILE_TYPES`
+
 - self.accept
     Returns the value for the "accept" attribute of the file input element;
-    Defaults to: the list of allowed file types;
+    Defaults to: None, which means we'll build it from `self.allowed_file_types` list;
     Example: `image/\*` - which also trigger the lookup into the image gallery on mobile devices
 
 - self.max_image_size
@@ -87,6 +91,11 @@ or override the corresponding methods:
 
 - def get_accept(self, request=None)
 - def get_max_image_size(self, request=None)
+
+Note: while "accept" is applied to the file input element, "allowed_file_types" is
+used during form validation; it is your responsability to supply coherent values.
+
+When "accept" is None, on the other side, this is guaranteed by UploadForm.
 
 
 The target view
@@ -185,7 +194,7 @@ The library will search these settings in the following order:
 .. code:: python
 
     UPLOAD_FORM_MAX_FILE_SIZE_MB = 12
-    UPLOAD_FROM_ALLOWED_FILE_TYPES = ".png .jpg .jpeg .gif"
+    UPLOAD_FORM_ALLOWED_FILE_TYPES = ".png .jpg .jpeg .gif"
     UPLOAD_FORM_PARALLEL_UPLOAD = False  (experimental)
 
 or:
@@ -194,7 +203,7 @@ or:
 
     CONSTANCE_CONFIG = {
         ...
-        'UPLOAD_FROM_ALLOWED_FILE_TYPES': (".png .jpg .jpeg .gif", "Tipi di files abilitati all'upload"),
+        'UPLOAD_FORM_ALLOWED_FILE_TYPES': (".png .jpg .jpeg .gif", "Tipi di files abilitati all'upload"),
         'UPLOAD_FORM_MAX_FILE_SIZE_MB': (12, 'Dimensione massima files in upload (MB)'),
         'UPLOAD_FORM_PARALLEL_UPLOAD': (False, "Activate concurrent files upload"),
     }
