@@ -10,8 +10,7 @@ def get_allowed_file_types(request=None):
             settings,
             'UPLOAD_FORM_ALLOWED_FILE_TYPES',
             ".jpg .jpeg .png .gif .bmp .tif .tiff .pic .doc .docx .odt .dot .xls .xlsx .pdf .dwg .dxf .txt")
-    values = str_types.lower().split()
-    return [item if item.startswith('.') else '.'+item for item in values]
+    return str_types
 
 
 def get_max_file_size_MB(request=None):

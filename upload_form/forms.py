@@ -29,6 +29,7 @@ class UploadForm(forms.Form):
         self.files = files
         self.file_errors = []
         self.accept = None
+        self.allowed_file_types = None
         self.max_image_size = 0
 
     def form_valid(self, request):
@@ -68,11 +69,19 @@ class UploadForm(forms.Form):
         """
         return self.max_image_size
 
-    def as_html(self, request):
+    def _list_allowed_file_types(self):
+        text = self.allowed_file_types if self.allowed_file_types is not None else app_settings.get_allowed_file_types()
+        # Allow multiple separators
+        tokens = text.lower().replace(',',' ').replace(';',' ').split()
+        # Add leading dot when required
+        tokens = [t if t.startswith('.') else ('.'+t) for t in tokens]
+        return tokens
 
-        accept = self.get_accept()
+    def as_html(self, request):
+        accept = self.get_accept(request)
         if accept is None:
-            accept = ','.join(app_settings.get_allowed_file_types())
+            # Build from list of allowed file types
+            accept = ','.join(self._list_allowed_file_types())
 
         html = render_to_string(
             'upload_form/upload_form.html', {
@@ -102,7 +111,7 @@ class UploadForm(forms.Form):
 
     def is_valid(self):
 
-        allowed_file_types = app_settings.get_allowed_file_types()
+        allowed_file_types = self._list_allowed_file_types()
         max_file_size_MB = app_settings.get_max_file_size_MB()
 
         self.file_errors = []
